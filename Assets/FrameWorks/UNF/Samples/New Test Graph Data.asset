@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93a0d67de11807468eb95d4ee780205, type: 3}
+  m_Name: New Test Graph Data
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 114917491569155886}
+  connections: []
+  CameraPosition: {x: 0, y: 0}
+--- !u!114 &114917491569155886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0}
+  ports:
+  - fieldName: TestPort
+    parentNode: {fileID: 114917491569155886}
+    IOType: 0
+    connectMethod: 0
+  graph: {fileID: 11400000}
+  TestPort: 0

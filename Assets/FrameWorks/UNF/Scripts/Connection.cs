@@ -5,17 +5,28 @@ using System;
 
 [Serializable]
 public class Connection{
-    public Node fromeNode;
-    public string fromeFieldName;
+    public Node outputNode;
+    public string outputFieldName;
 
     public object MovedData
     {
         get
         {
-            return fromeNode.GetOutPutValue(fromeFieldName);
+            return outputNode.GetOutPutValue(outputFieldName);
         }
     }
 
-    public Node toNode;
-    public string toFieldName;
+    public Node inputNode;
+    public string inputFieldName;
+    public Connection(NodePort input,NodePort output)
+    {
+        outputNode = output.parentNode;
+        outputFieldName = output.fieldName;
+        //         Out
+        //         \\//
+        //          \/
+        //          In
+        inputNode = input.parentNode;
+        inputFieldName = input.fieldName;
+    }
 }

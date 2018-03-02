@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+[Serializable]
 public class NodePort
 {
     public string fieldName;
@@ -23,14 +24,14 @@ public class NodePort
                 {
                     if (IOType == portType.Input)
                     {
-                        if (connection.toNode == parentNode && connection.toFieldName == fieldName)
+                        if (connection.inputNode == parentNode && connection.inputFieldName == fieldName)
                         {
                             foundConnection.Add(connection);
                         }
                     }
                     else if (IOType == portType.Output)
                     {
-                        if (connection.fromeNode == parentNode && connection.fromeFieldName == fieldName)
+                        if (connection.outputNode == parentNode && connection.outputFieldName == fieldName)
                         {
                             foundConnection.Add(connection);
                         }
@@ -57,6 +58,19 @@ public class NodePort
         parentNode = parent;
         connectMethod = connectionMethod;
         IOType = portType;
+    }
+
+
+    public void CreateConnection(NodePort other)
+    {
+        if(IOType == portType.Input && other.IOType == portType.Output)
+        {
+            parentNode.graph.TryCreateConnection(this, other);
+        }
+        else if (IOType == portType.Output && other.IOType == portType.Input)
+        {
+            parentNode.graph.TryCreateConnection(this, other);
+        }
     }
 }
 public class PortTypeAttribute : Attribute

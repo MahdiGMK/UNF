@@ -8,30 +8,42 @@ public abstract class Node : ScriptableObject
     public Vector2 position;
     public List<NodePort> ports;
     public GraphData graph;
-
+    public void Init()
+    {
+        RedirectPorts();
+    }
     public void RedirectPorts()
     {
         ports = new List<NodePort>();
         var fields = GetType().GetFields();
         foreach (var field in fields)
         {
-            PortTypeAttribute pa = (PortTypeAttribute)(field.GetCustomAttributes(typeof(PortTypeAttribute), false)[0]);
-            InputAttribute ia = (InputAttribute)(field.GetCustomAttributes(typeof(InputAttribute), false)[0]);
-            OutputAttribute oa = (OutputAttribute)(field.GetCustomAttributes(typeof(OutputAttribute), false)[0]);
-
-            if (ia != null)
+            PortTypeAttribute[] pa = (PortTypeAttribute[])(field.GetCustomAttributes(typeof(PortTypeAttribute), false));
+            InputAttribute[] ia = (InputAttribute[])(field.GetCustomAttributes(typeof(InputAttribute), false));
+            OutputAttribute[] oa = (OutputAttribute[])(field.GetCustomAttributes(typeof(OutputAttribute), false));
+            if (ia.Length > 0)
             {
-                if (pa != null)
-                    ports.Add(new NodePort(field.Name, this, NodePort.portType.Input, pa.connectionMethod));
+                if (pa.Length > 0)
+                    ports.Add(new NodePort(field.Name, this, NodePort.portType.Input, pa[0].connectionMethod));
                 else
                     ports.Add(new NodePort(field.Name, this, NodePort.portType.Input, NodePort.connectionMethod.Single));
             }
-            else if (oa != null)
+            else if (oa.Length > 0)
             {
-                if (pa != null)
-                    ports.Add(new NodePort(field.Name, this, NodePort.portType.Output, pa.connectionMethod));
+                if (pa.Length > 0)
+                    ports.Add(new NodePort(field.Name, this, NodePort.portType.Output, pa[0].connectionMethod));
                 else
                     ports.Add(new NodePort(field.Name, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple));
+            }
+        }
+    }
+    public void ClearConnections()
+    {
+        foreach ( var connection in graph.connections)
+        {
+            if(connection.inputNode == this || connection.outputNode == this)
+            {
+                graph.connections.Remove(connection);
             }
         }
     }
