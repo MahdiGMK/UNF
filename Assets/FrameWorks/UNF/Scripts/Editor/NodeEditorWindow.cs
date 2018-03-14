@@ -13,4 +13,11 @@ public class NodeEditorWindow : EditorWindow
         window.Show();
         return window;
     }
+    public void OnGUI()
+    {
+        if(data)
+        {
+            NodeEditorGUIUtility.DrawGraphData(data);
+        }
+    }
 }

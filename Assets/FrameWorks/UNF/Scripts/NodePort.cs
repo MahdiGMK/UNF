@@ -12,6 +12,7 @@ public class NodePort
     public Type Type;
     public portType IOType;
     public connectionMethod connectMethod;
+    public int drawingPos;
     public List<Connection> connections
     {
         get
@@ -52,12 +53,13 @@ public class NodePort
         Single,
         Multiple
     }
-    public NodePort(string name, Node parent, portType portType, connectionMethod connectionMethod)
+    public NodePort(string name,int pos, Node parent, portType portType, connectionMethod connectionMethod)
     {
         fieldName = name;
         parentNode = parent;
         connectMethod = connectionMethod;
         IOType = portType;
+        drawingPos = pos;
     }
 
 
