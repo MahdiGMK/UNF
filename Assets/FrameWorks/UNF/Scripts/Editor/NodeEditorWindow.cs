@@ -8,6 +8,7 @@ public class NodeEditorWindow : EditorWindow
     public GraphData data;
     public static NodeEditorWindow GetWindow(GraphData data)
     {
+        NodeEditorGUIUtility.Init();
         NodeEditorWindow window = CreateInstance<NodeEditorWindow>();
         window.data = data;
         window.Show();
@@ -19,5 +20,6 @@ public class NodeEditorWindow : EditorWindow
         {
             NodeEditorGUIUtility.DrawGraphData(data);
         }
+        Repaint();
     }
 }

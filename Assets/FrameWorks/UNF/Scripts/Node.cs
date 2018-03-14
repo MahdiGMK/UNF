@@ -5,6 +5,7 @@ using System;
 
 public abstract class Node : ScriptableObject
 {
+    public string Name;
     public Vector2 position;
     public List<NodePort> ports;
     public GraphData graph;

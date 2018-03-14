@@ -11,10 +11,13 @@ public static class NodeEditorGUIUtility
     public static void Init()
     {
         nodeTypeDic = new Dictionary<Type, NodeEditor>();
+        portColor = new Dictionary<Type, Color>();
     }
     #region DrawNodes
     public static void DrawNode(Node node)
     {
+        SetNodeName(node);
+
         NodeEditor ne;
         if (nodeTypeDic.TryGetValue(node.GetType(), out ne))
         {
@@ -29,7 +32,7 @@ public static class NodeEditorGUIUtility
             foreach (var type in types)
             {
                 var attributes = (NodeEditorAttribute[])type.GetCustomAttributes(typeof(NodeEditorAttribute), false);
-                if (attributes[0].nodeType != node.GetType())
+                if (attributes.Length > 0 && attributes[0].nodeType != node.GetType())
                     continue;
 
                 if (attributes.Length > 0)
@@ -46,13 +49,21 @@ public static class NodeEditorGUIUtility
             }
         }
     }
+    static void SetNodeName(Node node)
+    {
+        if(node.name.Replace(" ","") != node.Name.Replace(" ", ""))
+        {
+            node.name = ObjectNames.NicifyVariableName(node.Name);
+            AssetDatabase.SaveAssets();
+        }
+    }
     public static float GetHeight(Node node)
     {
         return 30;
     }
     static void NormalNodeDraw(Node node)
     {
-        GUI.Box(new Rect(node.position, new Vector2(100, GetHeight(node))), node.name);
+        GUI.Box(new Rect(node.position + node.graph.CameraPosition, new Vector2(100, GetHeight(node))), node.name);
     }
     #endregion
     #region DrawNodePorts
@@ -80,7 +91,7 @@ public static class NodeEditorGUIUtility
         Vector2 startT = Mathf.Clamp(startP.x - endP.x, 5, 10) * Vector2.right + startP;
         Vector2 endT = Mathf.Clamp(startP.x - endP.x, 5, 10) * Vector2.left + endP;
 
-        Handles.DrawBezier(startP, endP, startT, endT, NodePortColor(connection.inputNode.GetPort(connection.inputFieldName)),null,5);
+        Handles.DrawBezier(startP, endP, startT, endT, NodePortColor(connection.inputNode.GetPort(connection.inputFieldName)), null, 5);
     }
     #endregion
     #region NodeEditorWindow

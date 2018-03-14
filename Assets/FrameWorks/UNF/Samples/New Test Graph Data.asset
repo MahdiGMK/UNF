@@ -14,7 +14,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 114917491569155886}
   connections: []
-  CameraPosition: {x: 0, y: 0}
+  CameraPosition: {x: 44.15, y: 32.8}
 --- !u!114 &114917491569155886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24,13 +24,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: 
+  m_Name: New Node(01)
   m_EditorClassIdentifier: 
+  Name: New Node(01)
   position: {x: 0, y: 0}
   ports:
   - fieldName: TestPort
     parentNode: {fileID: 114917491569155886}
     IOType: 0
     connectMethod: 0
+    drawingPos: 0
   graph: {fileID: 11400000}
   TestPort: 0
