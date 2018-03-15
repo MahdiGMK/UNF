@@ -9,6 +9,10 @@ public abstract class Node : ScriptableObject
     public Vector2 position;
     public List<NodePort> ports;
     public GraphData graph;
+    public override string ToString()
+    {
+        return name;
+    }
     public void Init()
     {
         RedirectPorts();

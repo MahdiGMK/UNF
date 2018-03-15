@@ -19,7 +19,11 @@ public class NodeEditorWindow : EditorWindow
         if(data)
         {
             NodeEditorGUIUtility.DrawGraphData(data);
+            NodeEditorHandles.HandleGraphData(data);
         }
+    }
+    public void OnFocus()
+    {
         Repaint();
     }
 }

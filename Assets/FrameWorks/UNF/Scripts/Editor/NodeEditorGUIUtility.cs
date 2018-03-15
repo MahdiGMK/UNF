@@ -14,6 +14,11 @@ public static class NodeEditorGUIUtility
         portColor = new Dictionary<Type, Color>();
     }
     #region DrawNodes
+    public static Rect GetNodeRect(Node node)
+    {
+        Rect result = new Rect(node.position + node.graph.CameraPosition, new Vector2(GetNodeWidth(node), GetNodeHeight(node)));
+        return result;
+    }
     public static void DrawNode(Node node)
     {
         SetNodeName(node);
@@ -51,19 +56,57 @@ public static class NodeEditorGUIUtility
     }
     static void SetNodeName(Node node)
     {
-        if(node.name.Replace(" ","") != node.Name.Replace(" ", ""))
+        if (node.name.Replace(" ", "") != node.Name.Replace(" ", ""))
         {
             node.name = ObjectNames.NicifyVariableName(node.Name);
             AssetDatabase.SaveAssets();
         }
     }
-    public static float GetHeight(Node node)
+    public static float GetNodeHeight(Node node)
     {
-        return 30;
+        NodeEditor ne;
+        if (nodeTypeDic.TryGetValue(node.GetType(), out ne))
+        {
+            if (ne == null)
+            {
+                //Will be filled
+                return 30;
+            }
+            else
+            {
+                return ne.GetHeight(node);
+            }
+        }
+        else
+        {
+            //Will be filled
+            return 30;
+        }
+    }
+    public static float GetNodeWidth(Node node)
+    {
+        NodeEditor ne;
+        if (nodeTypeDic.TryGetValue(node.GetType(), out ne))
+        {
+            if (ne == null)
+            {
+                //Will be filled
+                return 100;
+            }
+            else
+            {
+                return ne.GetWidth(node);
+            }
+        }
+        else
+        {
+            //Will be filled
+            return 100;
+        }
     }
     static void NormalNodeDraw(Node node)
     {
-        GUI.Box(new Rect(node.position + node.graph.CameraPosition, new Vector2(100, GetHeight(node))), node.name);
+        GUI.Box(GetNodeRect(node), node.name);
     }
     #endregion
     #region DrawNodePorts
@@ -81,6 +124,11 @@ public static class NodeEditorGUIUtility
             return c;
         }
 
+    }
+    public static void DrawNodePort(NodePort port)
+    {
+        Rect position = new Rect(port.parentNode.position + new Vector2(port.IOType == NodePort.portType.Input ? 5 : GetNodeWidth(port.parentNode) - 5, port.drawingPos * 30), new Vector2(10, 10));
+        GUI.Box(position, "");
     }
     #endregion
     #region DrawConnections
