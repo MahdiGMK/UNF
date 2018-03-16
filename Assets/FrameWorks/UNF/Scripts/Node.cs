@@ -8,7 +8,9 @@ public abstract class Node : ScriptableObject
     public string Name;
     public Vector2 position;
     public List<NodePort> ports;
+    public List<string> fields;
     public GraphData graph;
+
     public override string ToString()
     {
         return name;
@@ -17,13 +19,20 @@ public abstract class Node : ScriptableObject
     {
         RedirectPorts();
     }
-    public void RedirectPorts()
+    protected virtual void RedirectPorts()
     {
         ports = new List<NodePort>();
-        var fields = GetType().GetFields();
-        for (int i = 0; i < fields.Length; i++)
+        fields = new List<string>();
+        var foundFields = GetType().GetFields();
+        var baseFields = GetType().BaseType.GetFields();
+        var baseFieldsList = new List<System.Reflection.FieldInfo>(baseFields);
+        for (int i = 0; i < foundFields.Length; i++)
         {
-            var field = fields[i];
+            var field = foundFields[i];
+            if (baseFieldsList.Find(obj => { return obj.Name == field.Name; }) != null || !field.IsPublic)
+                continue;
+
+            fields.Add(field.Name);
             PortTypeAttribute[] pa = (PortTypeAttribute[])(field.GetCustomAttributes(typeof(PortTypeAttribute), false));
             InputAttribute[] ia = (InputAttribute[])(field.GetCustomAttributes(typeof(InputAttribute), false));
             OutputAttribute[] oa = (OutputAttribute[])(field.GetCustomAttributes(typeof(OutputAttribute), false));

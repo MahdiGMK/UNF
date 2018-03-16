@@ -6,9 +6,16 @@ using UnityEngine;
 public class NodeEditorWindow : EditorWindow
 {
     public GraphData data;
-    public static NodeEditorWindow GetWindow(GraphData data)
+    public void OnEnable()
     {
         NodeEditorGUIUtility.Init();
+        foreach (var node in data.nodes)
+        {
+            node.Init();
+        }
+    }
+    public static NodeEditorWindow GetWindow(GraphData data)
+    {
         NodeEditorWindow window = CreateInstance<NodeEditorWindow>();
         window.data = data;
         window.Show();
@@ -16,14 +23,12 @@ public class NodeEditorWindow : EditorWindow
     }
     public void OnGUI()
     {
-        if(data)
+        if (data)
         {
             NodeEditorGUIUtility.DrawGraphData(data);
             NodeEditorHandles.HandleGraphData(data);
+            if (mouseOverWindow)
+                Repaint();
         }
-    }
-    public void OnFocus()
-    {
-        Repaint();
     }
 }

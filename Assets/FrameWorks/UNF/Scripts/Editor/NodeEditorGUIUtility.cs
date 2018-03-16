@@ -70,7 +70,7 @@ public static class NodeEditorGUIUtility
             if (ne == null)
             {
                 //Will be filled
-                return 30;
+                return 30 * node.fields.Count + 30;
             }
             else
             {
@@ -80,7 +80,7 @@ public static class NodeEditorGUIUtility
         else
         {
             //Will be filled
-            return 30;
+            return 30 * node.fields.Count + 30;
         }
     }
     public static float GetNodeWidth(Node node)
@@ -107,6 +107,10 @@ public static class NodeEditorGUIUtility
     static void NormalNodeDraw(Node node)
     {
         GUI.Box(GetNodeRect(node), node.name);
+        foreach (var nodePort in node.ports)
+        {
+            DrawNodePort(nodePort);
+        }
     }
     #endregion
     #region DrawNodePorts
@@ -127,8 +131,11 @@ public static class NodeEditorGUIUtility
     }
     public static void DrawNodePort(NodePort port)
     {
-        Rect position = new Rect(port.parentNode.position + new Vector2(port.IOType == NodePort.portType.Input ? 5 : GetNodeWidth(port.parentNode) - 5, port.drawingPos * 30), new Vector2(10, 10));
-        GUI.Box(position, "");
+        float DistancFromBorder = 5;
+        float DistancFromEachLine = 7.5f;
+        float PortSize = 15;
+        Rect position = new Rect(port.parentNode.position + port.parentNode.graph.CameraPosition + new Vector2(port.IOType == NodePort.portType.Input ? DistancFromBorder : GetNodeWidth(port.parentNode) - DistancFromBorder - PortSize, (port.drawingPos + 1) * 30 + DistancFromEachLine), new Vector2(PortSize, PortSize));
+        GUI.DrawTexture(position, Texture2D.whiteTexture);
     }
     #endregion
     #region DrawConnections

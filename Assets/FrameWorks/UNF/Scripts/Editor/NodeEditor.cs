@@ -11,7 +11,7 @@ public abstract class NodeEditor {
     public virtual float GetHeight(Node node)
     {
         //Will be filled
-        return 30;
+        return 30 * node.fields.Count + 30;
     }
     public virtual float GetWidth(Node node)
     {

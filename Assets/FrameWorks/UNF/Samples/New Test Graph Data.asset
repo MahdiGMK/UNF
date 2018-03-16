@@ -14,7 +14,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 114917491569155886}
   connections: []
-  CameraPosition: {x: 44.15, y: 32.8}
+  CameraPosition: {x: 156, y: 123}
 --- !u!114 &114917491569155886
 MonoBehaviour:
   m_ObjectHideFlags: 0
