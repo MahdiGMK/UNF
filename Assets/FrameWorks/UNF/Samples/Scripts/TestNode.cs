@@ -5,7 +5,7 @@ using System.Text;
 [Node(typeof(TestNode),"Nodes/TestNode")]
 public class TestNode : Node
 {
-    [Input]public float TestInput;
     [Output] public float TestOutput;
+    [Input]public float TestInput;
 
 }

@@ -9,15 +9,21 @@ public class NodeEditorWindow : EditorWindow
     public void OnEnable()
     {
         NodeEditorGUIUtility.Init();
-        foreach (var node in data.nodes)
-        {
-            node.Init();
-        }
+        if (data != null && data.nodes != null)
+            foreach (var node in data.nodes)
+            {
+                node.Init();
+            }
+    }
+    private void OnDestroy()
+    {
+        NodeEditorGUIUtility.Finalize();
     }
     public static NodeEditorWindow GetWindow(GraphData data)
     {
         NodeEditorWindow window = CreateInstance<NodeEditorWindow>();
         window.data = data;
+        window.OnEnable();
         window.Show();
         return window;
     }

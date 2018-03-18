@@ -39,16 +39,16 @@ public abstract class Node : ScriptableObject
             if (ia.Length > 0)
             {
                 if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, this, NodePort.portType.Input, pa[0].connectionMethod));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, pa[0].connectionMethod));
                 else
-                    ports.Add(new NodePort(field.Name, i, this, NodePort.portType.Input, NodePort.connectionMethod.Single));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, NodePort.connectionMethod.Single));
             }
             else if (oa.Length > 0)
             {
                 if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, this, NodePort.portType.Output, pa[0].connectionMethod));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, pa[0].connectionMethod));
                 else
-                    ports.Add(new NodePort(field.Name, i, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple));
             }
         }
     }

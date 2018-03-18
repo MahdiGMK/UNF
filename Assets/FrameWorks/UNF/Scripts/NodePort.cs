@@ -53,10 +53,11 @@ public class NodePort
         Single,
         Multiple
     }
-    public NodePort(string name,int pos, Node parent, portType portType, connectionMethod connectionMethod)
+    public NodePort(string name,int pos,Type type, Node parent, portType portType, connectionMethod connectionMethod)
     {
         fieldName = name;
         parentNode = parent;
+        Type = type;
         connectMethod = connectionMethod;
         IOType = portType;
         drawingPos = pos;

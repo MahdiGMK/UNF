@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public abstract class NodeEditor {
     public virtual void Draw(Node n)
     {
@@ -11,7 +12,7 @@ public abstract class NodeEditor {
     public virtual float GetHeight(Node node)
     {
         //Will be filled
-        return 30 * node.fields.Count + 30;
+        return 30 * node.fields.Count + 30 + 5;
     }
     public virtual float GetWidth(Node node)
     {
