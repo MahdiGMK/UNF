@@ -18,31 +18,36 @@ public class NodePort
         get
         {
             List<Connection> foundConnection = new List<Connection>();
-            Thread mtJob = new Thread(() =>
+            GraphData graph = parentNode.graph;
+            foreach (var connection in graph.connections)
             {
-                GraphData graph = parentNode.graph;
-                foreach (var connection in graph.connections)
+                if (IOType == portType.Input)
                 {
-                    if (IOType == portType.Input)
+                    if (connection.inputNode == parentNode && connection.inputFieldName == fieldName)
                     {
-                        if (connection.inputNode == parentNode && connection.inputFieldName == fieldName)
-                        {
-                            foundConnection.Add(connection);
-                        }
-                    }
-                    else if (IOType == portType.Output)
-                    {
-                        if (connection.outputNode == parentNode && connection.outputFieldName == fieldName)
-                        {
-                            foundConnection.Add(connection);
-                        }
+                        foundConnection.Add(connection);
                     }
                 }
-            });
-            mtJob.Start();
+                else if (IOType == portType.Output)
+                {
+                    if (connection.outputNode == parentNode && connection.outputFieldName == fieldName)
+                    {
+                        foundConnection.Add(connection);
+                    }
+                }
+            }
             return foundConnection;
         }
     }
+
+    public static NodePort zero
+    {
+        get
+        {
+            return new NodePort("", 0, null, null, portType.Input, connectionMethod.Single);
+        }
+    }
+
     public enum portType
     {
         Input,
@@ -53,7 +58,7 @@ public class NodePort
         Single,
         Multiple
     }
-    public NodePort(string name,int pos,Type type, Node parent, portType portType, connectionMethod connectionMethod)
+    public NodePort(string name, int pos, Type type, Node parent, portType portType, connectionMethod connectionMethod)
     {
         fieldName = name;
         parentNode = parent;
@@ -66,7 +71,7 @@ public class NodePort
 
     public void CreateConnection(NodePort other)
     {
-        if(IOType == portType.Input && other.IOType == portType.Output)
+        if (IOType == portType.Input && other.IOType == portType.Output)
         {
             parentNode.graph.TryCreateConnection(this, other);
         }

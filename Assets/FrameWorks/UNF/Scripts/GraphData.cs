@@ -9,6 +9,7 @@ public abstract class GraphData : ScriptableObject
     public List<Connection> connections = new List<Connection>();
     public Vector2 cameraPosition;
     public List<Node> selectedNodes = new List<Node>();
+    public NodePort selectedNodePort;
     public Vector2 CameraPosition(Vector2 ScreenSize)
     {
         return cameraPosition + ScreenSize / 2;
@@ -40,9 +41,17 @@ public abstract class GraphData : ScriptableObject
     }
     public void TryCreateConnection(NodePort input, NodePort output)
     {
-        if (Convert.ChangeType(output.Type.GetConstructors()[0].Invoke(null), input.Type) != null)
+        if (input.Type == output.Type && input.parentNode != output.parentNode)
         {
+            if (input.connectMethod == NodePort.connectionMethod.Single && input.connections.Count > 0)
+                connections.Remove(input.connections[0]);
+            if (output.connectMethod == NodePort.connectionMethod.Single && output.connections.Count > 0)
+                connections.Remove(output.connections[0]);
             connections.Add(new Connection(input, output));
         }
+    }
+    public void DestroyConnection(Connection connection)
+    {
+        connections.Remove(connection);
     }
 }

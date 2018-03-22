@@ -33,8 +33,16 @@ public static class NodeEditorHandles
     {
         DoMouseHandles(data);
     }
+    public static bool mouseDragging;
     public static void DoMouseHandles(GraphData data)
     {
+        Node hoveredNode = GetHoveredNode(data, Event.current.mousePosition);
+        NodePort hoveredNodePort = null;
+        if (hoveredNode)
+            hoveredNodePort = GetHoveredNodePort(hoveredNode, Event.current.mousePosition);
+
+        if (data.selectedNodePort != null && data.selectedNodePort.parentNode == null)
+            data.selectedNodePort = null;
         switch (Event.current.type)
         {
             case EventType.MouseDown:
@@ -42,15 +50,11 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-                        Node hoveredNode = GetHoveredNode(data, Event.current.mousePosition);
+                        #region Selection
                         if (hoveredNode)
                         {
-                            NodePort hoveredNodePort = GetHoveredNodePort(hoveredNode, Event.current.mousePosition);
-                            if (hoveredNodePort != null)
-                            {
-
-                            }
-                            else
+                            Debug.Log("0");
+                            if (hoveredNodePort == null)
                             {
                                 if (Event.current.shift)
                                 {
@@ -82,25 +86,50 @@ public static class NodeEditorHandles
                         }
                         else
                         {
-                            if(!Event.current.shift && !Event.current.control)
+                            if (!Event.current.shift && !Event.current.control)
                             {
                                 data.selectedNodes.Clear();
                             }
                         }
+                        #endregion
+                        #region ConnectionCreation
+                        if (hoveredNodePort != null)
+                        {
+                            data.selectedNodePort = hoveredNodePort;
+                        }
+                        #endregion
                         break;
                     //M
                     case 2:
                         break;
                     //R
                     case 1:
+                        #region ConnectionDestroction
+                        if (hoveredNodePort != null)
+                        {
+                            if (hoveredNodePort.connections.Count > 0)
+                                data.DestroyConnection(hoveredNodePort.connections[0]);
+                        }
+                        #endregion
                         break;
                 }
+                if (data.selectedNodes.Count > 0)
+                    Selection.objects = data.selectedNodes.ToArray();
+                else
+                    Selection.objects = new UnityEngine.Object[] { data };
                 break;
             case EventType.MouseDrag:
                 switch (Event.current.button)
                 {
                     //L
                     case 0:
+                        if (data.selectedNodes.Count > 0)
+                        {
+                            foreach (var node in data.selectedNodes)
+                            {
+                                node.position += Event.current.delta / data.ZoomAmm;
+                            }
+                        }
                         break;
                     //M
                     case 2:
@@ -116,6 +145,17 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
+                        #region ConnectionCreation
+                        if (data.selectedNodePort != null && hoveredNodePort != null)
+                            if (hoveredNodePort != data.selectedNodePort)
+                            {
+                                if (hoveredNodePort.IOType == NodePort.portType.Input && data.selectedNodePort.IOType == NodePort.portType.Output)
+                                    data.TryCreateConnection(hoveredNodePort, data.selectedNodePort);
+                                else if (hoveredNodePort.IOType == NodePort.portType.Output && data.selectedNodePort.IOType == NodePort.portType.Input)
+                                    data.TryCreateConnection(data.selectedNodePort, hoveredNodePort);
+                            }
+                        data.selectedNodePort = null;
+                        #endregion
                         break;
                     //M
                     case 2:
@@ -129,6 +169,13 @@ public static class NodeEditorHandles
             case EventType.ScrollWheel:
                 HandleCameraZoomToPoint(data, Event.current.delta.y, 2.5f, Event.current.mousePosition);
                 break;
+        }
+        if (data.selectedNodePort != null)
+        {
+            Color splineColor = Color.black;
+            if (data.selectedNodePort.Type != null)
+                splineColor = NodeEditorGUIUtility.NodePortColor(data.selectedNodePort);
+            NodeEditorGUIUtility.DrawSpline(NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, Event.current.mousePosition, splineColor);
         }
     }
     public static void HandleCameraPan(GraphData data, Vector2 delta)
