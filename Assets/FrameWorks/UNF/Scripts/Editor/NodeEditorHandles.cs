@@ -31,6 +31,20 @@ public static class NodeEditorHandles
 
     public static void HandleGraphData(GraphData data)
     {
+        if (Event.current.control && Event.current.shift)
+        {
+            UnityEngine.Object script = null;
+            if (Event.current.keyCode == KeyCode.H)
+            {
+                script = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/FrameWorks/UNF/Scripts/Editor/NodeEditorHandles.cs");
+                AssetDatabase.OpenAsset(script);
+            }
+            if (Event.current.keyCode == KeyCode.G)
+            {
+                script = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/FrameWorks/UNF/Scripts/Editor/NodeEditorGUIUtility.cs");
+                AssetDatabase.OpenAsset(script);
+            }
+        }
         DoMouseHandles(data);
     }
     public static bool mouseDragging;
@@ -123,7 +137,7 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-                        if (data.selectedNodes.Count > 0)
+                        if (data.selectedNodes.Count > 0 && data.selectedNodePort == null)
                         {
                             foreach (var node in data.selectedNodes)
                             {
@@ -175,7 +189,7 @@ public static class NodeEditorHandles
             Color splineColor = Color.black;
             if (data.selectedNodePort.Type != null)
                 splineColor = NodeEditorGUIUtility.NodePortColor(data.selectedNodePort);
-            NodeEditorGUIUtility.DrawSpline(NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, Event.current.mousePosition, splineColor);
+            NodeEditorGUIUtility.DrawSpline(NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, Event.current.mousePosition, splineColor, 7.5f * data.ZoomAmm);
         }
     }
     public static void HandleCameraPan(GraphData data, Vector2 delta)

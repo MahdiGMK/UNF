@@ -162,8 +162,8 @@ public static class NodeEditorGUIUtility
     #region DrawNodePorts
     public static Rect GetNodePortRect(NodePort port)
     {
-        float DistancFromBorder = 5;
-        float DistancFromEachLine = 7.5f;
+        float DistancFromBorder = 2.5f;
+        float DistancFromEachLine = 5f;
         float PortSize = 20;
 
         Rect parentRect = GetNodeRect(port.parentNode);
@@ -202,14 +202,14 @@ public static class NodeEditorGUIUtility
     {
         Vector2 startP = GetNodePortRect(connection.outputNode.GetPort(connection.outputFieldName)).center;
         Vector2 endP = GetNodePortRect(connection.inputNode.GetPort(connection.inputFieldName)).center;
-        DrawSpline(startP, endP, NodePortColor(connection.inputNode.GetPort(connection.inputFieldName)));
+        DrawSpline(startP, endP, NodePortColor(connection.inputNode.GetPort(connection.inputFieldName)), 7.5f * connection.inputNode.graph.ZoomAmm);
     }
-    public static void DrawSpline(Vector2 startP, Vector2 endP, Color color)
+    public static void DrawSpline(Vector2 startP, Vector2 endP, Color color, float size)
     {
         Vector2 startT = Mathf.Clamp(Vector2.Distance(startP, endP), 5, 1000) * Vector2.right / 2 + startP;
         Vector2 endT = Mathf.Clamp(Vector2.Distance(startP, endP), 5, 1000) * Vector2.left / 2 + endP;
 
-        Handles.DrawBezier(startP, endP, startT, endT, color, null, 5);
+        Handles.DrawBezier(startP, endP, startT, endT, color, null, size);
     }
     #endregion
     #region NodeEditorWindow

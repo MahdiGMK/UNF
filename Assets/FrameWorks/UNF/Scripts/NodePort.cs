@@ -13,6 +13,10 @@ public class NodePort
     public portType IOType;
     public connectionMethod connectMethod;
     public int drawingPos;
+    public override string ToString()
+    {
+        return IOType + "(" + Type.ToString() + ")";
+    }
     public List<Connection> connections
     {
         get
@@ -39,7 +43,6 @@ public class NodePort
             return foundConnection;
         }
     }
-
     public static NodePort zero
     {
         get
@@ -47,7 +50,6 @@ public class NodePort
             return new NodePort("", 0, null, null, portType.Input, connectionMethod.Single);
         }
     }
-
     public enum portType
     {
         Input,
@@ -67,8 +69,6 @@ public class NodePort
         IOType = portType;
         drawingPos = pos;
     }
-
-
     public void CreateConnection(NodePort other)
     {
         if (IOType == portType.Input && other.IOType == portType.Output)
