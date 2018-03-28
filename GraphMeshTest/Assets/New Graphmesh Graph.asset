@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa84fc612ad1f94e8f79a8b7ff076b0, type: 3}
+  m_Name: New Graphmesh Graph
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 114947074977454152}
+  - {fileID: 114335653434425716}
+  - {fileID: 114903824497452084}
+  - {fileID: 114999224394890656}
+  - {fileID: 114105868674046046}
+--- !u!114 &114105868674046046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333f74f2de9dffe4ba0d766effec9995, type: 3}
+  m_Name: ExposedInput
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -644, y: 200}
+  ports:
+    keys:
+    - value
+    values:
+    - _fieldName: value
+      _node: {fileID: 114105868674046046}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: resolution
+        node: {fileID: 114903824497452084}
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+  label: Resolution
+  value: 0
+--- !u!114 &114335653434425716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333f74f2de9dffe4ba0d766effec9995, type: 3}
+  m_Name: ExposedInput
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -644, y: 22}
+  ports:
+    keys:
+    - value
+    values:
+    - _fieldName: value
+      _node: {fileID: 114335653434425716}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: spline
+        node: {fileID: 114903824497452084}
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+  label: Beizier
+  value: 0
+--- !u!114 &114903824497452084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae07c9646297564c90981ccf6380c04, type: 3}
+  m_Name: FillSpline
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -274, y: 66}
+  ports:
+    keys:
+    - spline
+    - material
+    - resolution
+    - output
+    values:
+    - _fieldName: spline
+      _node: {fileID: 114903824497452084}
+      _typeQualifiedName: Bezier3DSpline, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: value
+        node: {fileID: 114335653434425716}
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: 114903824497452084}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: value
+        node: {fileID: 114999224394890656}
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: resolution
+      _node: {fileID: 114903824497452084}
+      _typeQualifiedName: System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: value
+        node: {fileID: 114105868674046046}
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 114903824497452084}
+      _typeQualifiedName: Graphmesh.ModelGroup, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 114947074977454152}
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+  spline: {fileID: 0}
+  material: {fileID: 0}
+  resolution: 10
+--- !u!114 &114947074977454152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8adb454b88a0dc542aa44472a5aa5804, type: 3}
+  m_Name: OutputModel
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 219, y: -23}
+  ports:
+    keys:
+    - input
+    values:
+    - _fieldName: input
+      _node: {fileID: 114947074977454152}
+      _typeQualifiedName: Graphmesh.ModelGroup, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 114903824497452084}
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+--- !u!114 &114999224394890656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333f74f2de9dffe4ba0d766effec9995, type: 3}
+  m_Name: ExposedInput
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -642, y: 105}
+  ports:
+    keys:
+    - value
+    values:
+    - _fieldName: value
+      _node: {fileID: 114999224394890656}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: material
+        node: {fileID: 114903824497452084}
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+  label: Material
+  value: 0

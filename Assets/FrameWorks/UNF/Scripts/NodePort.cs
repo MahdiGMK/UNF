@@ -12,6 +12,7 @@ public class NodePort
     public Type Type;
     public portType IOType;
     public connectionMethod connectMethod;
+    public showBackingValueMethod showBackValueMethod;
     public int drawingPos;
     public override string ToString()
     {
@@ -43,13 +44,7 @@ public class NodePort
             return foundConnection;
         }
     }
-    public static NodePort zero
-    {
-        get
-        {
-            return new NodePort("", 0, null, null, portType.Input, connectionMethod.Single);
-        }
-    }
+
     public enum portType
     {
         Input,
@@ -60,12 +55,19 @@ public class NodePort
         Single,
         Multiple
     }
-    public NodePort(string name, int pos, Type type, Node parent, portType portType, connectionMethod connectionMethod)
+    public enum showBackingValueMethod
+    {
+        Unconnected,
+        Always,
+        Never
+    }
+    public NodePort(string name, int pos, Type type, Node parent, portType portType, connectionMethod connectionMethod,showBackingValueMethod showBackingValueMethod)
     {
         fieldName = name;
         parentNode = parent;
         Type = type;
         connectMethod = connectionMethod;
+        showBackValueMethod = showBackingValueMethod;
         IOType = portType;
         drawingPos = pos;
     }
@@ -84,6 +86,11 @@ public class NodePort
 public class PortTypeAttribute : Attribute
 {
     internal readonly NodePort.connectionMethod connectionMethod;
+    public NodePort.showBackingValueMethod showBackingValueMethod;
+    public PortTypeAttribute(NodePort.connectionMethod connectionMethod)
+    {
+        this.connectionMethod = connectionMethod;
+    }
 }
 public class InputAttribute : Attribute
 {

@@ -26,7 +26,7 @@ public abstract class NodeEditor {
     }
     public virtual float GetWidth(Node node)
     {
-        return 100;
+        return 250;
     }
 }
 public class NodeEditorAttribute : Attribute

@@ -4,5 +4,7 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class TestGraphData : GraphData
 {
-
+    private void OnEnable()
+    {
+    }
 }

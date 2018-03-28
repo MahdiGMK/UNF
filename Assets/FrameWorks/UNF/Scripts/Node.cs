@@ -39,32 +39,38 @@ public abstract class Node : ScriptableObject
             if (ia.Length > 0)
             {
                 if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, pa[0].connectionMethod));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, pa[0].connectionMethod, pa[0].showBackingValueMethod));
                 else
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, NodePort.connectionMethod.Single));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, NodePort.connectionMethod.Single,NodePort.showBackingValueMethod.Unconnected));
             }
             else if (oa.Length > 0)
             {
                 if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, pa[0].connectionMethod));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, pa[0].connectionMethod,pa[0].showBackingValueMethod));
                 else
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple));
+                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple,NodePort.showBackingValueMethod.Unconnected));
             }
         }
     }
     public void ClearConnections()
     {
-        foreach (var connection in graph.connections)
+        for (int i = 0;i < graph.connections.Count;i++)
         {
+            var connection = graph.connections[i];
             if (connection.inputNode == this || connection.outputNode == this)
             {
                 graph.connections.Remove(connection);
+                i--;
             }
         }
     }
     public object GetInputValue(NodePort port)
     {
-        return port.connections[0].MovedData;
+        Connection[] connections = port.connections.ToArray();
+        if (connections.Length > 0)
+            return connections[0].MovedData;
+        else
+            return null;
     }
     public List<object> GetInputValues(NodePort port)
     {
@@ -79,6 +85,14 @@ public abstract class Node : ScriptableObject
     public NodePort GetPort(string fieldName)
     {
         return ports.Find(obj => { return obj.fieldName == fieldName; });
+    }
+    public virtual Color TitleColor()
+    {
+        return Color.white;
+    }
+    public virtual Color BodyColor()
+    {
+        return Color.white;
     }
 
 }

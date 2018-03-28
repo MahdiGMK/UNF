@@ -15,23 +15,27 @@ public abstract class GraphData : ScriptableObject
         return cameraPosition + ScreenSize / 2;
     }
     public float ZoomAmm = 1;
-    public Node CreateNode(Type t)
+    public Node CreateNode(Type t,Vector2 pos)
     {
         Node newNode = (Node)CreateInstance(t);
         newNode.Init();
+        newNode.position = pos;
         newNode.graph = this;
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.AddObjectToAsset(newNode, this);
         UnityEditor.AssetDatabase.SaveAssets();
 #endif
+        newNode.Name = "New " + t.ToString();
         nodes.Add(newNode);
+
         return newNode;
     }
-    public Node CopyNode(Node original)
+    public Node CopyNode(Node original,Vector2 pos)
     {
         Node newNode = original;
         newNode.Init();
         newNode.graph = this;
+        newNode.position = pos;
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.AddObjectToAsset(newNode, this);
         UnityEditor.AssetDatabase.SaveAssets();
@@ -39,9 +43,25 @@ public abstract class GraphData : ScriptableObject
         nodes.Add(newNode);
         return newNode;
     }
+    public void DestroyNode(Node node)
+    {
+        node.ClearConnections();
+        nodes.Remove(node);
+#if UNITY_EDITOR
+        DestroyImmediate(node, true);
+        UnityEditor.AssetDatabase.SaveAssets();
+#endif
+    }
+    public void ResetNode(Node node)
+    {
+        node.Name = "New " + node.GetType().ToString();
+        node.ClearConnections();
+    }
     public void TryCreateConnection(NodePort input, NodePort output)
     {
-        if (input.Type == output.Type && input.parentNode != output.parentNode)
+        //input.Type == output.Type
+        bool connectCondition = input.parentNode != output.parentNode;
+        if (connectCondition)
         {
             if (input.connectMethod == NodePort.connectionMethod.Single && input.connections.Count > 0)
                 connections.Remove(input.connections[0]);

@@ -5,7 +5,9 @@ using System.Text;
 [Node(typeof(TestNode),"Nodes/TestNode")]
 public class TestNode : Node
 {
-    [Output] public float TestOutput;
+    [PortType(NodePort.connectionMethod.Single,showBackingValueMethod = NodePort.showBackingValueMethod.Always)]
+    [Output] public bool TestOutput;
+    public float item001;
     [Input]public float TestInput;
 
 }

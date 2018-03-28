@@ -11,151 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c93a0d67de11807468eb95d4ee780205, type: 3}
   m_Name: New Test Graph Data
   m_EditorClassIdentifier: 
-  nodes:
-  - {fileID: 114917491569155886}
-  - {fileID: 114444829149139894}
-  - {fileID: 114185719754809330}
-  - {fileID: 114746869485357916}
-  connections:
-  - outputNode: {fileID: 114444829149139894}
-    outputFieldName: TestOutput
-    inputNode: {fileID: 114746869485357916}
-    inputFieldName: TestInput
-  - outputNode: {fileID: 114917491569155886}
-    outputFieldName: TestOutput
-    inputNode: {fileID: 114185719754809330}
-    inputFieldName: TestInput
-  - outputNode: {fileID: 114185719754809330}
-    outputFieldName: TestOutput
-    inputNode: {fileID: 114917491569155886}
-    inputFieldName: TestInput
-  cameraPosition: {x: 77.58333, y: -313.36655}
+  nodes: []
+  connections: []
+  cameraPosition: {x: -872.214, y: -88.5775}
   selectedNodes:
-  - {fileID: 114917491569155886}
+  - {fileID: 0}
+  - {fileID: 0}
   selectedNodePort:
     fieldName: 
     parentNode: {fileID: 0}
     IOType: 0
     connectMethod: 0
+    showBackValueMethod: 0
     drawingPos: 0
-  ZoomAmm: 1.5
---- !u!114 &114185719754809330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: Mahdi
-  m_EditorClassIdentifier: 
-  Name: Mahdi
-  position: {x: -48.666653, y: 370.00076}
-  ports:
-  - fieldName: TestOutput
-    parentNode: {fileID: 114185719754809330}
-    IOType: 1
-    connectMethod: 1
-    drawingPos: 0
-  - fieldName: TestInput
-    parentNode: {fileID: 114185719754809330}
-    IOType: 0
-    connectMethod: 0
-    drawingPos: 1
-  fields:
-  - TestOutput
-  - TestInput
-  graph: {fileID: 11400000}
-  TestOutput: 0
-  TestInput: 0
---- !u!114 &114444829149139894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: Mohammad
-  m_EditorClassIdentifier: 
-  Name: Mohammad
-  position: {x: -172, y: 265}
-  ports:
-  - fieldName: TestOutput
-    parentNode: {fileID: 114444829149139894}
-    IOType: 1
-    connectMethod: 1
-    drawingPos: 0
-  - fieldName: TestInput
-    parentNode: {fileID: 114444829149139894}
-    IOType: 0
-    connectMethod: 0
-    drawingPos: 1
-  fields:
-  - TestOutput
-  - TestInput
-  graph: {fileID: 11400000}
-  TestOutput: 0
-  TestInput: 0
---- !u!114 &114746869485357916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: Ali
-  m_EditorClassIdentifier: 
-  Name: Ali
-  position: {x: -47.666748, y: 265.00027}
-  ports:
-  - fieldName: TestOutput
-    parentNode: {fileID: 114746869485357916}
-    IOType: 1
-    connectMethod: 1
-    drawingPos: 0
-  - fieldName: TestInput
-    parentNode: {fileID: 114746869485357916}
-    IOType: 0
-    connectMethod: 0
-    drawingPos: 1
-  fields:
-  - TestOutput
-  - TestInput
-  graph: {fileID: 11400000}
-  TestOutput: 0
-  TestInput: 0
---- !u!114 &114917491569155886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: Baradaran
-  m_EditorClassIdentifier: 
-  Name: Baradaran
-  position: {x: 137.99992, y: 368.66638}
-  ports:
-  - fieldName: TestOutput
-    parentNode: {fileID: 114917491569155886}
-    IOType: 1
-    connectMethod: 1
-    drawingPos: 0
-  - fieldName: TestInput
-    parentNode: {fileID: 114917491569155886}
-    IOType: 0
-    connectMethod: 0
-    drawingPos: 1
-  fields:
-  - TestOutput
-  - TestInput
-  graph: {fileID: 11400000}
-  TestOutput: 0
-  TestInput: 0
+  ZoomAmm: 0.8

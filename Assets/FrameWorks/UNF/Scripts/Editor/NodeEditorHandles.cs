@@ -48,6 +48,7 @@ public static class NodeEditorHandles
         DoMouseHandles(data);
     }
     public static bool mouseDragging;
+    public static GenericMenu rightClickMenu;
     public static void DoMouseHandles(GraphData data)
     {
         Node hoveredNode = GetHoveredNode(data, Event.current.mousePosition);
@@ -60,6 +61,7 @@ public static class NodeEditorHandles
         switch (Event.current.type)
         {
             case EventType.MouseDown:
+                Vector2 LastMousePos = Event.current.mousePosition;
                 switch (Event.current.button)
                 {
                     //L
@@ -67,7 +69,6 @@ public static class NodeEditorHandles
                         #region Selection
                         if (hoveredNode)
                         {
-                            Debug.Log("0");
                             if (hoveredNodePort == null)
                             {
                                 if (Event.current.shift)
@@ -118,6 +119,48 @@ public static class NodeEditorHandles
                         break;
                     //R
                     case 1:
+                        #region Selection
+                        if (hoveredNode)
+                        {
+                            if (hoveredNodePort == null)
+                            {
+                                if (Event.current.shift)
+                                {
+                                    if (!data.selectedNodes.Contains(hoveredNode))
+                                    {
+                                        data.selectedNodes.Add(hoveredNode);
+                                    }
+                                }
+                                else if (Event.current.control)
+                                {
+                                    if (data.selectedNodes.Contains(hoveredNode))
+                                    {
+                                        data.selectedNodes.Remove(hoveredNode);
+                                    }
+                                }
+                                else
+                                {
+                                    if (data.selectedNodes.Contains(hoveredNode))
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        data.selectedNodes.Clear();
+                                        data.selectedNodes.Add(hoveredNode);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!Event.current.shift && !Event.current.control)
+                            {
+                                data.selectedNodes.Clear();
+                            }
+                        }
+                        #endregion
+
                         #region ConnectionDestroction
                         if (hoveredNodePort != null)
                         {
@@ -125,6 +168,48 @@ public static class NodeEditorHandles
                                 data.DestroyConnection(hoveredNodePort.connections[0]);
                         }
                         #endregion
+                        rightClickMenu = new GenericMenu();
+                        if (hoveredNode == null)
+                        {
+                            List<NodeAttribute> nodeAttributes = new List<NodeAttribute>();
+                            Type[] nodeTypes = typeof(Node).Assembly.GetTypes();
+                            foreach (var nodeType in nodeTypes)
+                            {
+                                var attributes = (NodeAttribute[])nodeType.GetCustomAttributes(typeof(NodeAttribute), false);
+                                if (attributes.Length > 0)
+                                    nodeAttributes.Add(attributes[0]);
+                            }
+                            foreach (var nodeAttribute in nodeAttributes)
+                            {
+                                rightClickMenu.AddItem(new GUIContent(nodeAttribute.creatingPath), false, () =>
+                                {
+                                    data.CreateNode(nodeAttribute.nodeType, (-data.cameraPosition + LastMousePos / data.ZoomAmm) - Screen.safeArea.size / 2 / data.ZoomAmm);
+
+                                });
+                            }
+                        }
+                        else
+                        {
+                            rightClickMenu.AddItem(new GUIContent("Remove"), false, () =>
+                            {
+                                foreach (var node in data.selectedNodes)
+                                {
+                                    data.DestroyNode(node);
+                                }
+                            });
+                            rightClickMenu.AddItem(new GUIContent("Reset"), false, () => {
+                                foreach (var node in data.selectedNodes)
+                                {
+                                    data.ResetNode(node);
+                                }
+                            });
+                        }
+                        rightClickMenu.AddSeparator("");
+                        rightClickMenu.AddItem(new GUIContent("Prefrences"), false, () => { });
+
+                        //Drop Down
+                        if (hoveredNodePort == null)
+                            rightClickMenu.ShowAsContext();
                         break;
                 }
                 if (data.selectedNodes.Count > 0)
@@ -201,14 +286,14 @@ public static class NodeEditorHandles
     {
         //Zoom
         float d = Mathf.Clamp(delta, -0.1f, 0.1f) * -sensitivity;
-        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + d, 0.5f, 1.5f);
+        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + d, 0.8f, 1.55f);
     }
     public static void HandleCameraZoomToPoint(GraphData data, float delta, float sensitivity, Vector2 point)
     {
         //Zoom
         float df = Mathf.Clamp(delta, -0.1f, 0.1f) * -sensitivity;
         float prevZA = data.ZoomAmm;
-        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + df, 0.5f, 1.5f);
+        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + df, 0.8f, 1.6f);
         //GoToPoint
         if (data.ZoomAmm != prevZA)
         {
