@@ -18,32 +18,31 @@ public class NodePort
     {
         return IOType + "(" + Type.ToString() + ")";
     }
-    public List<Connection> connections
+    public List<Connection> connections;
+    public void RefreshConnections()
     {
-        get
+        List<Connection> foundConnection = new List<Connection>();
+        GraphData graph = parentNode.graph;
+        foreach (var connection in graph.connections)
         {
-            List<Connection> foundConnection = new List<Connection>();
-            GraphData graph = parentNode.graph;
-            foreach (var connection in graph.connections)
+            if (IOType == portType.Input)
             {
-                if (IOType == portType.Input)
+                if (connection.inputNode == parentNode && connection.inputFieldName == fieldName)
                 {
-                    if (connection.inputNode == parentNode && connection.inputFieldName == fieldName)
-                    {
-                        foundConnection.Add(connection);
-                    }
-                }
-                else if (IOType == portType.Output)
-                {
-                    if (connection.outputNode == parentNode && connection.outputFieldName == fieldName)
-                    {
-                        foundConnection.Add(connection);
-                    }
+                    foundConnection.Add(connection);
                 }
             }
-            return foundConnection;
+            else if (IOType == portType.Output)
+            {
+                if (connection.outputNode == parentNode && connection.outputFieldName == fieldName)
+                {
+                    foundConnection.Add(connection);
+                }
+            }
         }
+        connections = foundConnection;
     }
+
 
     public enum portType
     {
@@ -61,7 +60,7 @@ public class NodePort
         Always,
         Never
     }
-    public NodePort(string name, int pos, Type type, Node parent, portType portType, connectionMethod connectionMethod,showBackingValueMethod showBackingValueMethod)
+    public NodePort(string name, int pos, Type type, Node parent, portType portType, connectionMethod connectionMethod, showBackingValueMethod showBackingValueMethod)
     {
         fieldName = name;
         parentNode = parent;
@@ -92,6 +91,7 @@ public class PortTypeAttribute : Attribute
         this.connectionMethod = connectionMethod;
     }
 }
+
 public class InputAttribute : Attribute
 {
 

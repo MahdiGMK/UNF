@@ -10,15 +10,25 @@ public abstract class GraphData : ScriptableObject
     public Vector2 cameraPosition;
     public List<Node> selectedNodes = new List<Node>();
     public NodePort selectedNodePort;
+
+    public void Init()
+    {
+        if (connections == null)
+            connections = new List<Connection>();
+        foreach (var node in nodes)
+        {
+            node.Init();
+        }
+    }
+
     public Vector2 CameraPosition(Vector2 ScreenSize)
     {
         return cameraPosition + ScreenSize / 2;
     }
     public float ZoomAmm = 1;
-    public Node CreateNode(Type t,Vector2 pos)
+    public Node CreateNode(Type t, Vector2 pos)
     {
         Node newNode = (Node)CreateInstance(t);
-        newNode.Init();
         newNode.position = pos;
         newNode.graph = this;
 #if UNITY_EDITOR
@@ -27,13 +37,12 @@ public abstract class GraphData : ScriptableObject
 #endif
         newNode.Name = "New " + t.ToString();
         nodes.Add(newNode);
-
+        newNode.Init();
         return newNode;
     }
-    public Node CopyNode(Node original,Vector2 pos)
+    public Node CopyNode(Node original, Vector2 pos)
     {
         Node newNode = original;
-        newNode.Init();
         newNode.graph = this;
         newNode.position = pos;
 #if UNITY_EDITOR
@@ -41,6 +50,7 @@ public abstract class GraphData : ScriptableObject
         UnityEditor.AssetDatabase.SaveAssets();
 #endif
         nodes.Add(newNode);
+        newNode.Init();
         return newNode;
     }
     public void DestroyNode(Node node)
@@ -51,11 +61,13 @@ public abstract class GraphData : ScriptableObject
         DestroyImmediate(node, true);
         UnityEditor.AssetDatabase.SaveAssets();
 #endif
+        Init();
     }
     public void ResetNode(Node node)
     {
         node.Name = "New " + node.GetType().ToString();
         node.ClearConnections();
+        Init();
     }
     public void TryCreateConnection(NodePort input, NodePort output)
     {
@@ -69,9 +81,11 @@ public abstract class GraphData : ScriptableObject
                 connections.Remove(output.connections[0]);
             connections.Add(new Connection(input, output));
         }
+        Init();
     }
     public void DestroyConnection(Connection connection)
     {
         connections.Remove(connection);
+        Init();
     }
 }

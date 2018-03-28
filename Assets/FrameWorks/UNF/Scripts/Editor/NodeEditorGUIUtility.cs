@@ -415,7 +415,7 @@ public static class NodeEditorGUIUtility
     }
     public static void DrawMouseDragHalo(GraphData data)
     {
-        if (NodeEditorHandles.mouseDragRect != Rect.zero)
+        if (NodeEditorHandles.mouseDragRect.x > 0)
         {
             if (Event.current.shift)
                 GUI.color = new Color(0, 0.9f, 0, 0.3f);

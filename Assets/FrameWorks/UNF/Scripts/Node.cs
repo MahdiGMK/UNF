@@ -18,6 +18,10 @@ public abstract class Node : ScriptableObject
     public void Init()
     {
         RedirectPorts();
+        foreach (var port in ports)
+        {
+            port.RefreshConnections();
+        }
     }
     protected virtual void RedirectPorts()
     {
