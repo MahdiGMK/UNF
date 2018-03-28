@@ -60,7 +60,7 @@ public abstract class GraphData : ScriptableObject
     public void TryCreateConnection(NodePort input, NodePort output)
     {
         //input.Type == output.Type
-        bool connectCondition = input.parentNode != output.parentNode;
+        bool connectCondition = input.parentNode != output.parentNode && connections.Find(obj => { return obj.inputNode == input.parentNode && obj.inputFieldName == input.fieldName && obj.outputNode == output.parentNode && obj.outputFieldName == output.fieldName; }) == null;
         if (connectCondition)
         {
             if (input.connectMethod == NodePort.connectionMethod.Single && input.connections.Count > 0)

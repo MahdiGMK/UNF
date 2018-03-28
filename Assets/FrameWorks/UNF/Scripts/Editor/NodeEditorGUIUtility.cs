@@ -119,6 +119,10 @@ public static class NodeEditorGUIUtility
     }
     static void SetNodeName(Node node)
     {
+        if(node.Name == "")
+        {
+            node.Name = "New " + node.GetType();
+        }
         if (node.name != node.Name)
         {
             node.name = node.Name;
@@ -158,7 +162,7 @@ public static class NodeEditorGUIUtility
         GUI.color = node.BodyColor();
         GUI.Box(r, "", NodeBodyStyle);
         GUI.color = node.TitleColor();
-        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name, NodeTitleStyle);
+        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name + "(" + node.GetType() +")", NodeTitleStyle);
         GUI.color = Color.white;
         for (int i = 0; i < node.ports.Count; i++)
         {

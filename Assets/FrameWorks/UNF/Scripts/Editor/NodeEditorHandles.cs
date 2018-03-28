@@ -293,7 +293,7 @@ public static class NodeEditorHandles
         //Zoom
         float df = Mathf.Clamp(delta, -0.1f, 0.1f) * -sensitivity;
         float prevZA = data.ZoomAmm;
-        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + df, 0.8f, 1.6f);
+        data.ZoomAmm = Mathf.Clamp(data.ZoomAmm + df, 0.8f, 1.55f);
         //GoToPoint
         if (data.ZoomAmm != prevZA)
         {
