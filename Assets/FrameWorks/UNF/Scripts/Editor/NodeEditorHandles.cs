@@ -47,7 +47,8 @@ public static class NodeEditorHandles
         }
         DoMouseHandles(data);
     }
-    public static bool mouseDragging;
+    public static Rect mouseDragRect;
+    static Vector2 mouseDragRectStartPoint;
     public static GenericMenu rightClickMenu;
     public static void DoMouseHandles(GraphData data)
     {
@@ -105,6 +106,8 @@ public static class NodeEditorHandles
                             {
                                 data.selectedNodes.Clear();
                             }
+                            mouseDragRect = new Rect(Event.current.mousePosition, Vector2.zero);
+                            mouseDragRectStartPoint = Event.current.mousePosition;
                         }
                         #endregion
                         #region ConnectionCreation
@@ -197,7 +200,8 @@ public static class NodeEditorHandles
                                     data.DestroyNode(node);
                                 }
                             });
-                            rightClickMenu.AddItem(new GUIContent("Reset"), false, () => {
+                            rightClickMenu.AddItem(new GUIContent("Reset"), false, () =>
+                            {
                                 foreach (var node in data.selectedNodes)
                                 {
                                     data.ResetNode(node);
@@ -222,7 +226,31 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-                        if (data.selectedNodes.Count > 0 && data.selectedNodePort == null)
+                        if (mouseDragRect.position.x >= 0)
+                        {
+                            Vector2 mp = Event.current.mousePosition;
+                            if (mp.x > mouseDragRectStartPoint.x)
+                            {
+                                mouseDragRect.xMin = mouseDragRectStartPoint.x;
+                                mouseDragRect.xMax = mp.x;
+                            }
+                            else
+                            {
+                                mouseDragRect.xMax = mouseDragRectStartPoint.x;
+                                mouseDragRect.xMin = mp.x;
+                            }
+                            if (mp.y > mouseDragRectStartPoint.y)
+                            {
+                                mouseDragRect.yMin = mouseDragRectStartPoint.y;
+                                mouseDragRect.yMax = mp.y;
+                            }
+                            else
+                            {
+                                mouseDragRect.yMax = mouseDragRectStartPoint.y;
+                                mouseDragRect.yMin = mp.y;
+                            }
+                        }
+                        if (data.selectedNodes.Count > 0 && data.selectedNodePort == null && hoveredNode != null && data.selectedNodes.Contains(hoveredNode) && mouseDragRect.position.x < 0)
                         {
                             foreach (var node in data.selectedNodes)
                             {
@@ -244,6 +272,22 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
+
+                        foreach (var node in data.nodes)
+                        {
+                            Rect nodeRect = NodeEditorGUIUtility.GetNodeRect(node);
+                            if (nodeRect.Overlaps(mouseDragRect))
+                            {
+                                if (Event.current.shift && !data.selectedNodes.Contains(node))
+                                    data.selectedNodes.Add(node);
+                                else if (Event.current.control && data.selectedNodes.Contains(node))
+                                    data.selectedNodes.Remove(node);
+                                else if (!Event.current.shift && !Event.current.control)
+                                    data.selectedNodes.Add(node);
+                            }
+                        }
+                        mouseDragRect = new Rect(-1, -1, 0, 0);
+
                         #region ConnectionCreation
                         if (data.selectedNodePort != null && hoveredNodePort != null)
                             if (hoveredNodePort != data.selectedNodePort)

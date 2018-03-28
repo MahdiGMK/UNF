@@ -119,7 +119,7 @@ public static class NodeEditorGUIUtility
     }
     static void SetNodeName(Node node)
     {
-        if(node.Name == "")
+        if (node.Name == "")
         {
             node.Name = "New " + node.GetType();
         }
@@ -162,7 +162,7 @@ public static class NodeEditorGUIUtility
         GUI.color = node.BodyColor();
         GUI.Box(r, "", NodeBodyStyle);
         GUI.color = node.TitleColor();
-        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name + "(" + node.GetType() +")", NodeTitleStyle);
+        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name + "(" + node.GetType() + ")", NodeTitleStyle);
         GUI.color = Color.white;
         for (int i = 0; i < node.ports.Count; i++)
         {
@@ -301,7 +301,7 @@ public static class NodeEditorGUIUtility
         r.y = 10;
 
         DrawNodeMap(data, r);
-
+        DrawMouseDragHalo(data);
     }
     public static void DrawGrid(GraphData data, float bigCellSize, float smallCellSize, Color backGroundColor)
     {
@@ -393,6 +393,33 @@ public static class NodeEditorGUIUtility
         }
         #endregion
 
+    }
+    public static void DrawMouseDragHalo(GraphData data)
+    {
+        if (NodeEditorHandles.mouseDragRect != Rect.zero)
+        {
+            if (Event.current.shift)
+                GUI.color = new Color(0, 0.9f, 0, 0.3f);
+            else if (Event.current.control)
+                GUI.color = new Color(0.9f, 0, 0, 0.3f);
+            else
+                GUI.color = new Color(0, 0.4f, 0.5f, 0.3f);
+            GUI.Box(NodeEditorHandles.mouseDragRect, "");
+            foreach (var node in data.nodes)
+            {
+                Rect nodeRect = GetNodeRect(node);
+                if (nodeRect.Overlaps(NodeEditorHandles.mouseDragRect))
+                {
+                    if (Event.current.shift && !data.selectedNodes.Contains(node))
+                        GUI.Box(new Rect(nodeRect.position - new Vector2(1, 1), nodeRect.size + new Vector2(2, 2)), "");
+                    else if (Event.current.control && data.selectedNodes.Contains(node))
+                        GUI.Box(new Rect(nodeRect.position - new Vector2(1, 1), nodeRect.size + new Vector2(2, 2)), "");
+                    else if (!Event.current.shift && !Event.current.control)
+                        GUI.Box(new Rect(nodeRect.position - new Vector2(1, 1), nodeRect.size + new Vector2(2, 2)), "");
+                }
+            }
+            GUI.color = Color.white;
+        }
     }
     #endregion
 }
