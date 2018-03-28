@@ -18,6 +18,9 @@ public static class NodeEditorGUIUtility
     public static Dictionary<Type, NodeEditor> nodeTypeDic;
     public static Dictionary<Type, Color> portColor;
 
+    public static Dictionary<Node, Rect> nodeRects;
+    public static Dictionary<NodePort, Rect> nodePortRects;
+
     public static void Init()
     {
         guiData = AssetDatabase.LoadAssetAtPath<GUIData>("Assets/FrameWorks/UNF/Scripts/Editor/Recources/GUI Data.asset");
@@ -31,6 +34,11 @@ public static class NodeEditorGUIUtility
         nodeTypeDic = new Dictionary<Type, NodeEditor>();
         portColor = new Dictionary<Type, Color>();
         //LoadData();
+    }
+    public static void OnFrameStart()
+    {
+        nodeRects = new Dictionary<Node, Rect>();
+        nodePortRects = new Dictionary<NodePort, Rect>();
     }
     public static void Finalize()
     {
@@ -69,8 +77,13 @@ public static class NodeEditorGUIUtility
     #region DrawNodes
     public static Rect GetNodeRect(Node node)
     {
-        Rect result = new Rect(Vector2.zero, new Vector2(GetNodeWidth(node), GetNodeHeight(node)) * node.graph.ZoomAmm);
-        result.center = (node.position + node.graph.cameraPosition) * node.graph.ZoomAmm + new Vector2(Screen.width, Screen.height - 24) / 2;
+        Rect result;
+        if (!nodeRects.TryGetValue(node, out result))
+        {
+            result = new Rect(Vector2.zero, new Vector2(GetNodeWidth(node), GetNodeHeight(node)) * node.graph.ZoomAmm);
+            result.center = (node.position + node.graph.cameraPosition) * node.graph.ZoomAmm + new Vector2(Screen.width, Screen.height - 24) / 2;
+            nodeRects.Add(node, result);
+        }
         return result;
     }
     public static void DrawNode(Node node)
@@ -180,17 +193,21 @@ public static class NodeEditorGUIUtility
     public static float PortSize = 20;
     public static Rect GetNodePortRect(NodePort port)
     {
+        Rect result;
+        if (!nodePortRects.TryGetValue(port, out result))
+        {
+            Rect parentRect = GetNodeRect(port.parentNode);
 
-        Rect parentRect = GetNodeRect(port.parentNode);
+            NodeEditor ne;
+            Vector2 position;
+            if (nodeTypeDic.TryGetValue(port.parentNode.GetType(), out ne) && ne != null)
+                position = ne.GetNodePortPosition(port);
+            else
+                position = parentRect.position + new Vector2(port.IOType == NodePort.portType.Input ? PropertyDistancFromBorder * port.parentNode.graph.ZoomAmm : parentRect.width - PropertyDistancFromBorder * port.parentNode.graph.ZoomAmm - PortSize * port.parentNode.graph.ZoomAmm, (port.drawingPos + 1) * port.parentNode.graph.ZoomAmm * 30 + PropertyDistancFromEachLine * port.parentNode.graph.ZoomAmm);
 
-        NodeEditor ne;
-        Vector2 position;
-        if (nodeTypeDic.TryGetValue(port.parentNode.GetType(), out ne) && ne != null)
-            position = ne.GetNodePortPosition(port);
-        else
-            position = parentRect.position + new Vector2(port.IOType == NodePort.portType.Input ? PropertyDistancFromBorder * port.parentNode.graph.ZoomAmm : parentRect.width - PropertyDistancFromBorder * port.parentNode.graph.ZoomAmm - PortSize * port.parentNode.graph.ZoomAmm, (port.drawingPos + 1) * port.parentNode.graph.ZoomAmm * 30 + PropertyDistancFromEachLine * port.parentNode.graph.ZoomAmm);
-
-        Rect result = new Rect(position, new Vector2(PortSize, PortSize) * port.parentNode.graph.ZoomAmm);
+            result = new Rect(position, new Vector2(PortSize, PortSize) * port.parentNode.graph.ZoomAmm);
+            nodePortRects.Add(port, result);
+        }
         return result;
     }
     public static Color NodePortColor(NodePort port)
@@ -280,6 +297,8 @@ public static class NodeEditorGUIUtility
     #region NodeEditorWindow
     public static void DrawGraphData(GraphData data)
     {
+        OnFrameStart();
+
         DrawGrid(data, 100, 20, new Color(0.7f, 0.7f, 0.7f));
 
         NodeBodyStyle = guiData.Style("NodeBody");

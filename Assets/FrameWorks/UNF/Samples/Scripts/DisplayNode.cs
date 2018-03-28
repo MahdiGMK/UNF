@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+[Node(typeof(DisplayNode),"Debuggers/display")]
 public class DisplayNode : Node
 {
     [Input, PortType(NodePort.connectionMethod.Single, showBackingValueMethod = NodePort.showBackingValueMethod.Never)] public string Input;

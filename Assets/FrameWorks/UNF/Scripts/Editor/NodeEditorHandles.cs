@@ -47,8 +47,8 @@ public static class NodeEditorHandles
         }
         DoMouseHandles(data);
     }
-    public static Rect mouseDragRect;
-    static Vector2 mouseDragRectStartPoint;
+    public static Rect mouseDragRect = new Rect(-1, -1, 0, 0);
+    static Vector2 mouseDragRectStartPoint = new Vector2(-1, -1);
     public static GenericMenu rightClickMenu;
     public static void DoMouseHandles(GraphData data)
     {
@@ -272,7 +272,10 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-
+                        if (!Event.current.shift && !Event.current.control && mouseDragRect.x >= 0)
+                        {
+                            data.selectedNodes.Clear();
+                        }
                         foreach (var node in data.nodes)
                         {
                             Rect nodeRect = NodeEditorGUIUtility.GetNodeRect(node);
@@ -283,7 +286,9 @@ public static class NodeEditorHandles
                                 else if (Event.current.control && data.selectedNodes.Contains(node))
                                     data.selectedNodes.Remove(node);
                                 else if (!Event.current.shift && !Event.current.control)
+                                {
                                     data.selectedNodes.Add(node);
+                                }
                             }
                         }
                         mouseDragRect = new Rect(-1, -1, 0, 0);

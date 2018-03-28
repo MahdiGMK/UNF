@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Name: New Test Graph Data
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 114288560541871790}
-  connections: []
-  cameraPosition: {x: -1043.7726, y: -150.09457}
-  selectedNodes: []
+  - {fileID: 114971351154377810}
+  - {fileID: 114190830251076336}
+  connections:
+  - outputNode: {fileID: 114971351154377810}
+    outputFieldName: output
+    inputNode: {fileID: 114190830251076336}
+    inputFieldName: Input
+  cameraPosition: {x: -1279.9927, y: -22.0849}
+  selectedNodes:
+  - {fileID: 0}
+  - {fileID: 0}
   selectedNodePort:
     fieldName: 
     parentNode: {fileID: 0}
@@ -24,7 +31,7 @@ MonoBehaviour:
     showBackValueMethod: 0
     drawingPos: 0
   ZoomAmm: 0.8
---- !u!114 &114288560541871790
+--- !u!114 &114190830251076336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -32,29 +39,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
-  m_Name: New TestNode
+  m_Script: {fileID: 11500000, guid: c59f6fcab5bae1141af090e8c065f5e7, type: 3}
+  m_Name: New DisplayNode
   m_EditorClassIdentifier: 
-  Name: New TestNode
-  position: {x: 1298.7725, y: 166.96957}
+  Name: New DisplayNode
+  position: {x: 1757.1482, y: 224.57892}
   ports:
-  - fieldName: TestOutput
-    parentNode: {fileID: 114288560541871790}
+  - fieldName: Input
+    parentNode: {fileID: 114190830251076336}
+    IOType: 0
+    connectMethod: 0
+    showBackValueMethod: 2
+    drawingPos: 0
+  fields:
+  - Input
+  graph: {fileID: 11400000}
+  Input: 
+--- !u!114 &114971351154377810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df93f7211d51fbf45928532b06ea4568, type: 3}
+  m_Name: New FloatNode
+  m_EditorClassIdentifier: 
+  Name: New FloatNode
+  position: {x: 773.3982, y: 372.07892}
+  ports:
+  - fieldName: output
+    parentNode: {fileID: 114971351154377810}
     IOType: 1
     connectMethod: 1
-    showBackValueMethod: 1
-    drawingPos: 0
-  - fieldName: TestInput
-    parentNode: {fileID: 114288560541871790}
-    IOType: 0
-    connectMethod: 1
-    showBackValueMethod: 1
-    drawingPos: 2
+    showBackValueMethod: 0
+    drawingPos: 1
   fields:
-  - TestOutput
-  - item001
-  - TestInput
+  - value
+  - output
   graph: {fileID: 11400000}
-  TestOutput: 0
-  item001: 0
-  TestInput: 0
+  value: 0
+  output: 0
