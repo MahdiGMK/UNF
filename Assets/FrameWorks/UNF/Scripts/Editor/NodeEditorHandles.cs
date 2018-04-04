@@ -50,10 +50,12 @@ public static class NodeEditorHandles
     public static Rect mouseDragRect = new Rect(-1, -1, 0, 0);
     static Vector2 mouseDragRectStartPoint = new Vector2(-1, -1);
     public static GenericMenu rightClickMenu;
+
+    public static NodePort hoveredNodePort;
     public static void DoMouseHandles(GraphData data)
     {
         Node hoveredNode = GetHoveredNode(data, Event.current.mousePosition);
-        NodePort hoveredNodePort = null;
+        hoveredNodePort = null;
         if (hoveredNode)
             hoveredNodePort = GetHoveredNodePort(hoveredNode, Event.current.mousePosition);
 
@@ -200,6 +202,14 @@ public static class NodeEditorHandles
                                     data.DestroyNode(node);
                                 }
                             });
+                            rightClickMenu.AddItem(new GUIContent("Copy"), false, () =>
+                            {
+                                foreach (var node in data.selectedNodes)
+                                {
+                                    data.CopyNode(node, node.position + new Vector2(50, 25));
+                                }
+                            });
+
                             rightClickMenu.AddItem(new GUIContent("Reset"), false, () =>
                             {
                                 foreach (var node in data.selectedNodes)
@@ -209,7 +219,9 @@ public static class NodeEditorHandles
                             });
                         }
                         rightClickMenu.AddSeparator("");
-                        rightClickMenu.AddItem(new GUIContent("Prefrences"), false, () => { });
+                        rightClickMenu.AddItem(new GUIContent("Prefrences"), false, () =>
+                        {
+                        });
 
                         //Drop Down
                         if (hoveredNodePort == null)

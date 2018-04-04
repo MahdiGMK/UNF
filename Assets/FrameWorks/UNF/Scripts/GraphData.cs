@@ -7,10 +7,14 @@ public abstract class GraphData : ScriptableObject
 {
     public List<Node> nodes = new List<Node>();
     public List<Connection> connections = new List<Connection>();
+#if UNITY_EDITOR
     public Vector2 cameraPosition;
+    public float ZoomAmm = 1;
+    [NonSerialized, HideInInspector]
     public List<Node> selectedNodes = new List<Node>();
+    [NonSerialized,HideInInspector]
     public NodePort selectedNodePort;
-
+#endif
     public void Init()
     {
         if (connections == null)
@@ -25,7 +29,6 @@ public abstract class GraphData : ScriptableObject
     {
         return cameraPosition + ScreenSize / 2;
     }
-    public float ZoomAmm = 1;
     public Node CreateNode(Type t, Vector2 pos)
     {
         Node newNode = (Node)CreateInstance(t);
@@ -42,16 +45,7 @@ public abstract class GraphData : ScriptableObject
     }
     public Node CopyNode(Node original, Vector2 pos)
     {
-        Node newNode = original;
-        newNode.graph = this;
-        newNode.position = pos;
-#if UNITY_EDITOR
-        UnityEditor.AssetDatabase.AddObjectToAsset(newNode, this);
-        UnityEditor.AssetDatabase.SaveAssets();
-#endif
-        nodes.Add(newNode);
-        newNode.Init();
-        return newNode;
+        return CreateNode(original.GetType(), pos);
     }
     public void DestroyNode(Node node)
     {

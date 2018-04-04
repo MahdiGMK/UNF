@@ -15,10 +15,6 @@ public class NodeEditorWindow : EditorWindow
                 node.Init();
             }
     }
-    private void OnDestroy()
-    {
-        NodeEditorGUIUtility.Finalize();
-    }
     public static NodeEditorWindow GetWindow(GraphData data)
     {
         NodeEditorWindow window = CreateInstance<NodeEditorWindow>();

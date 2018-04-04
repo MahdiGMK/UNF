@@ -9,14 +9,13 @@ using System.IO;
 
 public static class NodeEditorGUIUtility
 {
-    public static Color haloColor = new Color(1, 0.7f, 0);
+    public static NodeEditorPreferences.Setting preferenceSetting;
     public static GUIData guiData;
 
     public static GUIStyle NodeBodyStyle, NodeTitleStyle, NodeOutLineStyle;
     public static Texture NodePortTexture;
 
     public static Dictionary<Type, NodeEditor> nodeTypeDic;
-    public static Dictionary<Type, Color> portColor;
 
     public static Dictionary<Node, Rect> nodeRects;
     public static Dictionary<NodePort, Rect> nodePortRects;
@@ -32,48 +31,14 @@ public static class NodeEditorGUIUtility
         NodePortTexture = guiData.Texture("NodePort");
 
         nodeTypeDic = new Dictionary<Type, NodeEditor>();
-        portColor = new Dictionary<Type, Color>();
         //LoadData();
     }
     public static void OnFrameStart()
     {
+        preferenceSetting = NodeEditorPreferences.currentSetting;
         nodeRects = new Dictionary<Node, Rect>();
         nodePortRects = new Dictionary<NodePort, Rect>();
     }
-    public static void Finalize()
-    {
-        //SaveData();
-    }
-    /*
-    public static void LoadData()
-    {
-        if (File.Exists("Assets/FrameWorks/UNF/guiData.gdata"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream stream = new FileStream("Assets/FrameWorks/UNF/guiData.gdata", FileMode.OpenOrCreate);
-            Dictionary<Type, Color> data = bf.Deserialize(stream) as Dictionary<Type, Color>;
-
-            portColor = data;
-            stream.Flush();
-            stream.Close();
-        }
-        else
-        {
-            portColor = new Dictionary<Type, Color>();
-            SaveData();
-        }
-    }
-    public static void SaveData()
-    {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream stream = new FileStream("Assets/FrameWorks/UNF/guiData.gdata", FileMode.Create);
-        Dictionary<Type, Color> streamingData = portColor;
-        bf.Serialize(stream, streamingData);
-        stream.Flush();
-        stream.Close();
-    }
-    */
-
     #region DrawNodes
     public static Rect GetNodeRect(Node node)
     {
@@ -92,7 +57,7 @@ public static class NodeEditorGUIUtility
         Rect r = GetNodeRect(node);
         r.size += new Vector2(5, 5);
         r.position -= new Vector2(2.5f, 2.5f);
-        GUI.color = haloColor;
+        GUI.color = preferenceSetting.nodeSelectionColor;
         if (node.graph.selectedNodes.Contains(node))
             GUI.Box(r, "", NodeOutLineStyle);
         GUI.color = Color.white;
@@ -213,10 +178,15 @@ public static class NodeEditorGUIUtility
     public static Color NodePortColor(NodePort port)
     {
         Color c = Color.black;
-        if (!portColor.TryGetValue(port.Type, out c))
+        if (!preferenceSetting.typeColors.TryGetValue(port.Type, out c))
         {
+#if UNITY_5_4_OR_NEWER
+            UnityEngine.Random.InitState(port.Type.GetHashCode());
+#else
+            UnityEngine.Random.seed = port.Type.GetHashCode();
+#endif
             c = UnityEngine.Random.ColorHSV(0, 1, .5f, 1, .5f, 1, 1, 1);
-            portColor.Add(port.Type, c);
+            preferenceSetting.typeColors.Add(port.Type, c);
         }
         return c;
 
@@ -299,7 +269,7 @@ public static class NodeEditorGUIUtility
     {
         OnFrameStart();
 
-        DrawGrid(data, 100, 20, new Color(0.7f, 0.7f, 0.7f));
+        DrawGrid(data, 100, 20, preferenceSetting.backgroundColor);
 
         NodeBodyStyle = guiData.Style("NodeBody");
         NodeTitleStyle = guiData.Style("NodeTitle");
@@ -321,6 +291,20 @@ public static class NodeEditorGUIUtility
 
         DrawNodeMap(data, r);
         DrawMouseDragHalo(data);
+        DrawNodePortToltip();
+    }
+    public static void DrawNodePortToltip()
+    {
+        NodePort p = NodeEditorHandles.hoveredNodePort;
+        if (p != null)
+        {
+            Vector2 c = Event.current.mousePosition;
+            Rect r = new Rect(0, 0, 140, 20);
+            r.position = c - new Vector2(10,10);
+            GUI.color = new Color(1, 1, 1, 0.8f);
+            GUI.Box(r, p.Type.FullName + ","+ (p.connectMethod == NodePort.connectionMethod.Single?"S":"M"));
+            GUI.color = Color.white;
+        }
     }
     public static void DrawGrid(GraphData data, float bigCellSize, float smallCellSize, Color backGroundColor)
     {
@@ -332,9 +316,9 @@ public static class NodeEditorGUIUtility
     {
         #region Draw Background
         {
-            GUI.color = new Color(1, 1, 1, 0.8f);
+            GUI.color = preferenceSetting.miniMapBorderColor;
             GUI.DrawTexture(new Rect(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10), Texture2D.whiteTexture);
-            GUI.color = new Color(0, 0, 0, 0.3f);
+            GUI.color = preferenceSetting.miniMapBackgroundColor;
             GUI.DrawTexture(rect, Texture2D.whiteTexture);
         }
         #endregion
@@ -369,10 +353,15 @@ public static class NodeEditorGUIUtility
             Rect nodeRect = nodeRects[i];
             string nodeName = nodeNames[i];
             Rect nodeR = new Rect((nodeRect.x - holderRect.x) / holderRect.width * rect.width + rect.x, (nodeRect.y - holderRect.y) / holderRect.height * rect.height + rect.y, nodeRect.width / holderRect.width * rect.width, nodeRect.height / holderRect.height * rect.height);
-            GUI.color = new Color(0, 0, 0, 0.5f);
+            nodeR.size = new Vector2(Mathf.Clamp(nodeR.width, 10, 10000), Mathf.Clamp(nodeR.height, 5, 10000));
+            GUI.color = preferenceSetting.miniMapNodeColor;
             GUIStyle style = new GUIStyle(GUI.skin.box);
+            style.normal = GUI.skin.button.normal;
             style.fontSize = (int)(nodeR.size.magnitude / rect.size.magnitude * 30);
-            GUI.Box(nodeR, nodeName, style);
+            if (GUI.Button(nodeR, nodeName, style))
+            {
+                data.cameraPosition = -data.nodes[i].position;
+            }
             GUI.color = Color.white;
         }
         #endregion
@@ -406,8 +395,10 @@ public static class NodeEditorGUIUtility
                 cameraR.x = rect.xMax;
             if (cameraR.y > rect.yMax)
                 cameraR.y = rect.yMax;
-            GUI.color = new Color(0, 0, 0, 0.2f);
-            GUI.Box(cameraR, "**View**");
+            GUI.color = preferenceSetting.miniMapViewColor;
+            GUIStyle s = new GUIStyle(GUI.skin.box);
+            s.alignment = TextAnchor.MiddleCenter;
+            GUI.Box(cameraR, "V", s);
             GUI.color = Color.white;
         }
         #endregion

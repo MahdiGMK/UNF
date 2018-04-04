@@ -11,17 +11,109 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c93a0d67de11807468eb95d4ee780205, type: 3}
   m_Name: New Test Graph Data
   m_EditorClassIdentifier: 
-  nodes: []
+  nodes:
+  - {fileID: 114028378402861200}
+  - {fileID: 114389769531940946}
+  - {fileID: 114002418985475050}
   connections: []
-  cameraPosition: {x: -1290.4675, y: -617.6415}
-  selectedNodes:
-  - {fileID: 0}
-  selectedNodePort:
-    fieldName: 
-    parentNode: {fileID: 0}
-    IOType: 0
-    connectMethod: 0
-    showBackValueMethod: 0
+  cameraPosition: {x: -21.25, y: 9.75}
+  ZoomAmm: 0.8
+--- !u!114 &114002418985475050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
+  m_Name: New TestNode
+  m_EditorClassIdentifier: 
+  Name: New TestNode
+  position: {x: 509.375, y: 34}
+  ports:
+  - fieldName: TestOutput
+    parentNode: {fileID: 114002418985475050}
+    IOType: 1
+    connectMethod: 1
+    showBackValueMethod: 1
     drawingPos: 0
     connections: []
-  ZoomAmm: 1.05
+  - fieldName: TestInput
+    parentNode: {fileID: 114002418985475050}
+    IOType: 0
+    connectMethod: 1
+    showBackValueMethod: 1
+    drawingPos: 2
+    connections: []
+  fields:
+  - TestOutput
+  - item001
+  - TestInput
+  graph: {fileID: 11400000}
+  TestOutput: 0
+  item001: 0
+  TestInput: 0
+--- !u!114 &114028378402861200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4323b3e554c05844aee633d47193ee2, type: 3}
+  m_Name: New TestNode
+  m_EditorClassIdentifier: 
+  Name: New TestNode
+  position: {x: 0, y: 0}
+  ports:
+  - fieldName: TestOutput
+    parentNode: {fileID: 114028378402861200}
+    IOType: 1
+    connectMethod: 1
+    showBackValueMethod: 1
+    drawingPos: 0
+    connections: []
+  - fieldName: TestInput
+    parentNode: {fileID: 114028378402861200}
+    IOType: 0
+    connectMethod: 1
+    showBackValueMethod: 1
+    drawingPos: 2
+    connections: []
+  fields:
+  - TestOutput
+  - item001
+  - TestInput
+  graph: {fileID: 11400000}
+  TestOutput: 0
+  item001: 0
+  TestInput: 0
+--- !u!114 &114389769531940946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df93f7211d51fbf45928532b06ea4568, type: 3}
+  m_Name: New FloatNode
+  m_EditorClassIdentifier: 
+  Name: New FloatNode
+  position: {x: 290.625, y: 179}
+  ports:
+  - fieldName: output
+    parentNode: {fileID: 114389769531940946}
+    IOType: 1
+    connectMethod: 1
+    showBackValueMethod: 0
+    drawingPos: 1
+    connections: []
+  fields:
+  - value
+  - output
+  graph: {fileID: 11400000}
+  value: 0
+  output: 0
