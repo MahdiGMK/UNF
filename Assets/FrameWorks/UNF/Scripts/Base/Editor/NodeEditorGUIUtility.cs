@@ -13,7 +13,7 @@ public static class NodeEditorGUIUtility
     public static GUIData guiData;
 
     public static GUIStyle NodeBodyStyle, NodeTitleStyle, NodeOutLineStyle;
-    public static Texture NodePortTexture;
+    public static Texture NodePortTexture, EventPortTexture;
 
     public static Dictionary<Type, NodeEditor> nodeTypeDic;
 
@@ -22,13 +22,14 @@ public static class NodeEditorGUIUtility
 
     public static void Init()
     {
-        guiData = AssetDatabase.LoadAssetAtPath<GUIData>("Assets/FrameWorks/UNF/Scripts/Editor/Recources/GUI Data.asset");
+        guiData = AssetDatabase.LoadAssetAtPath<GUIData>("Assets/FrameWorks/UNF/Scripts/Base/Editor/Recources/GUI Data.asset");
 
         NodeBodyStyle = guiData.Style("NodeBody");
         NodeTitleStyle = guiData.Style("NodeTitle");
         NodeOutLineStyle = guiData.Style("OutLine");
 
         NodePortTexture = guiData.Texture("NodePort");
+        EventPortTexture = guiData.Texture("EventPort");
 
         nodeTypeDic = new Dictionary<Type, NodeEditor>();
         //LoadData();
@@ -140,7 +141,9 @@ public static class NodeEditorGUIUtility
         GUI.color = node.BodyColor();
         GUI.Box(r, "", NodeBodyStyle);
         GUI.color = node.TitleColor();
-        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name + "(" + node.GetType() + ")", NodeTitleStyle);
+        GUIStyle style = new GUIStyle(NodeTitleStyle);
+        style.fontSize = (int)(NodeTitleStyle.fontSize * node.graph.ZoomAmm);
+        GUI.Box(new Rect(r.x, r.y, r.width, 30 * node.graph.ZoomAmm), node.name + "(" + node.GetType() + ")", style);
         GUI.color = Color.white;
         for (int i = 0; i < node.ports.Count; i++)
         {
@@ -177,8 +180,8 @@ public static class NodeEditorGUIUtility
     }
     public static Color NodePortColor(NodePort port)
     {
-        Color c = Color.black;
-        if (!preferenceSetting.typeColors.TryGetValue(port.Type, out c))
+        Color c = Color.white;
+        if (port.Type != typeof(StateEvent) && !preferenceSetting.typeColors.TryGetValue(port.Type, out c))
         {
 #if UNITY_5_4_OR_NEWER
             UnityEngine.Random.InitState(port.Type.GetHashCode());
@@ -195,8 +198,15 @@ public static class NodeEditorGUIUtility
     {
         Rect position = GetNodePortRect(port);
         Rect nodePos = GetNodeRect(port.parentNode);
-        GUI.color = NodePortColor(port);
-        GUI.DrawTexture(position, NodePortTexture);
+        if (port is StateEvent)
+            GUI.color = Color.white;
+        else
+            GUI.color = NodePortColor(port);
+        if (port is StateEvent)
+            GUI.DrawTexture(position, EventPortTexture);
+
+        else
+            GUI.DrawTexture(position, NodePortTexture);
         GUI.color = Color.white;
     }
     public static void DrawPorperty(int portIndex, NodePort port)
@@ -204,7 +214,7 @@ public static class NodeEditorGUIUtility
         Rect nodeRect = GetNodeRect(port.parentNode);
         SerializedObject so = new SerializedObject(port.parentNode);
         SerializedProperty sp = so.FindProperty(port.fieldName);
-        Rect rect = new Rect(Vector2.zero, new Vector2(nodeRect.width - PropertyDistancFromBorder * 2 - PortSize * port.parentNode.graph.ZoomAmm, EditorGUI.GetPropertyHeight(sp)));
+        Rect rect = new Rect(Vector2.zero, new Vector2(nodeRect.width - PropertyDistancFromBorder * 2 - PortSize * port.parentNode.graph.ZoomAmm, 20));
         rect.position = new Vector2(nodeRect.x + (PropertyDistancFromBorder + PortSize) * port.parentNode.graph.ZoomAmm, 0);
         rect.center = new Vector2(rect.center.x, nodeRect.position.y + ((portIndex + 1) * 30 + PropertyDistancFromEachLine + PortSize / 2) * port.parentNode.graph.ZoomAmm);
         Action act = () =>
@@ -254,7 +264,9 @@ public static class NodeEditorGUIUtility
     {
         Vector2 startP = GetNodePortRect(connection.outputNode.GetPort(connection.outputFieldName)).center;
         Vector2 endP = GetNodePortRect(connection.inputNode.GetPort(connection.inputFieldName)).center;
-        DrawSpline(startP, endP, NodePortColor(connection.inputNode.GetPort(connection.inputFieldName)), 7.5f * connection.inputNode.graph.ZoomAmm);
+        Color col = Color.white;
+        col = NodePortColor(connection.inputNode.GetPort(connection.inputFieldName));
+        DrawSpline(startP, endP, col, 7.5f * connection.inputNode.graph.ZoomAmm);
     }
     public static void DrawSpline(Vector2 startP, Vector2 endP, Color color, float size)
     {
@@ -300,9 +312,9 @@ public static class NodeEditorGUIUtility
         {
             Vector2 c = Event.current.mousePosition;
             Rect r = new Rect(0, 0, 140, 20);
-            r.position = c - new Vector2(10,10);
+            r.position = c - new Vector2(10, 10);
             GUI.color = new Color(1, 1, 1, 0.8f);
-            GUI.Box(r, p.Type.FullName + ","+ (p.connectMethod == NodePort.connectionMethod.Single?"S":"M"));
+            GUI.Box(r, p.Type.FullName + "," + (p.connectMethod == NodePort.connectionMethod.Single ? "S" : "M"));
             GUI.color = Color.white;
         }
     }
@@ -406,7 +418,7 @@ public static class NodeEditorGUIUtility
     }
     public static void DrawMouseDragHalo(GraphData data)
     {
-        if (NodeEditorHandles.mouseDragRect.x > 0)
+        if (NodeEditorHandles.hasMouseDragRect)
         {
             if (Event.current.shift)
                 GUI.color = new Color(0, 0.9f, 0, 0.3f);

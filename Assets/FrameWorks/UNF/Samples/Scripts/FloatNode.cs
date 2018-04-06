@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-[Node(typeof(FloatNode),"Value Holders/float")]
+[Node(typeof(FloatNode), "State Holders/float", UsingID = "TSM")]
 class FloatNode:Node
     {
     public float value;

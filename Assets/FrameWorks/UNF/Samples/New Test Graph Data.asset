@@ -15,8 +15,25 @@ MonoBehaviour:
   - {fileID: 114028378402861200}
   - {fileID: 114389769531940946}
   - {fileID: 114002418985475050}
-  connections: []
-  cameraPosition: {x: -21.25, y: 9.75}
+  - {fileID: 114319446633452948}
+  connections:
+  - outputNode: {fileID: 114028378402861200}
+    outputFieldName: TestOutput
+    inputNode: {fileID: 114002418985475050}
+    inputFieldName: TestInput
+  - outputNode: {fileID: 114002418985475050}
+    outputFieldName: TestOutput
+    inputNode: {fileID: 114319446633452948}
+    inputFieldName: Input
+  - outputNode: {fileID: 114389769531940946}
+    outputFieldName: output
+    inputNode: {fileID: 114028378402861200}
+    inputFieldName: TestInput
+  - outputNode: {fileID: 114389769531940946}
+    outputFieldName: output
+    inputNode: {fileID: 114002418985475050}
+    inputFieldName: TestInput
+  cameraPosition: {x: -365.95532, y: -282.0645}
   ZoomAmm: 0.8
 --- !u!114 &114002418985475050
 MonoBehaviour:
@@ -38,21 +55,33 @@ MonoBehaviour:
     connectMethod: 1
     showBackValueMethod: 1
     drawingPos: 0
-    connections: []
+    connections:
+    - outputNode: {fileID: 114002418985475050}
+      outputFieldName: TestOutput
+      inputNode: {fileID: 114319446633452948}
+      inputFieldName: Input
   - fieldName: TestInput
     parentNode: {fileID: 114002418985475050}
     IOType: 0
     connectMethod: 1
     showBackValueMethod: 1
     drawingPos: 2
-    connections: []
+    connections:
+    - outputNode: {fileID: 114028378402861200}
+      outputFieldName: TestOutput
+      inputNode: {fileID: 114002418985475050}
+      inputFieldName: TestInput
+    - outputNode: {fileID: 114389769531940946}
+      outputFieldName: output
+      inputNode: {fileID: 114002418985475050}
+      inputFieldName: TestInput
   fields:
   - TestOutput
   - item001
   - TestInput
   graph: {fileID: 11400000}
   TestOutput: 0
-  item001: 0
+  item001: -2.41
   TestInput: 0
 --- !u!114 &114028378402861200
 MonoBehaviour:
@@ -66,7 +95,7 @@ MonoBehaviour:
   m_Name: New TestNode
   m_EditorClassIdentifier: 
   Name: New TestNode
-  position: {x: 0, y: 0}
+  position: {x: 111.25, y: 52.5}
   ports:
   - fieldName: TestOutput
     parentNode: {fileID: 114028378402861200}
@@ -74,22 +103,59 @@ MonoBehaviour:
     connectMethod: 1
     showBackValueMethod: 1
     drawingPos: 0
-    connections: []
+    connections:
+    - outputNode: {fileID: 114028378402861200}
+      outputFieldName: TestOutput
+      inputNode: {fileID: 114002418985475050}
+      inputFieldName: TestInput
   - fieldName: TestInput
     parentNode: {fileID: 114028378402861200}
     IOType: 0
     connectMethod: 1
     showBackValueMethod: 1
     drawingPos: 2
-    connections: []
+    connections:
+    - outputNode: {fileID: 114389769531940946}
+      outputFieldName: output
+      inputNode: {fileID: 114028378402861200}
+      inputFieldName: TestInput
   fields:
   - TestOutput
   - item001
   - TestInput
   graph: {fileID: 11400000}
   TestOutput: 0
-  item001: 0
+  item001: 0.39
   TestInput: 0
+--- !u!114 &114319446633452948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59f6fcab5bae1141af090e8c065f5e7, type: 3}
+  m_Name: New DisplayNode
+  m_EditorClassIdentifier: 
+  Name: New DisplayNode
+  position: {x: 793.6692, y: 301.74197}
+  ports:
+  - fieldName: Input
+    parentNode: {fileID: 114319446633452948}
+    IOType: 0
+    connectMethod: 0
+    showBackValueMethod: 2
+    drawingPos: 0
+    connections:
+    - outputNode: {fileID: 114002418985475050}
+      outputFieldName: TestOutput
+      inputNode: {fileID: 114319446633452948}
+      inputFieldName: Input
+  fields:
+  - Input
+  graph: {fileID: 11400000}
+  Input: 
 --- !u!114 &114389769531940946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,7 +168,7 @@ MonoBehaviour:
   m_Name: New FloatNode
   m_EditorClassIdentifier: 
   Name: New FloatNode
-  position: {x: 290.625, y: 179}
+  position: {x: 15.020159, y: 349.6449}
   ports:
   - fieldName: output
     parentNode: {fileID: 114389769531940946}
@@ -110,10 +176,42 @@ MonoBehaviour:
     connectMethod: 1
     showBackValueMethod: 0
     drawingPos: 1
-    connections: []
+    connections:
+    - outputNode: {fileID: 114389769531940946}
+      outputFieldName: output
+      inputNode: {fileID: 114028378402861200}
+      inputFieldName: TestInput
+    - outputNode: {fileID: 114389769531940946}
+      outputFieldName: output
+      inputNode: {fileID: 114002418985475050}
+      inputFieldName: TestInput
   fields:
   - value
   - output
   graph: {fileID: 11400000}
-  value: 0
+  value: -1.17
   output: 0
+--- !u!114 &114826096788611296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8cfd804847f68429acaa2adab47227, type: 3}
+  m_Name: New StateNode
+  m_EditorClassIdentifier: 
+  Name: New StateNode
+  position: {x: 439.08032, y: 433.3145}
+  ports:
+  - fieldName: StateStarter
+    parentNode: {fileID: 114826096788611296}
+    IOType: 0
+    connectMethod: 0
+    showBackValueMethod: 0
+    drawingPos: 0
+    connections: []
+  fields:
+  - StateStarter
+  graph: {fileID: 11400000}

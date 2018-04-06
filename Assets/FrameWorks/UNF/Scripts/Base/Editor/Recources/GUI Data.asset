@@ -132,7 +132,7 @@ MonoBehaviour:
       m_Top: -1
       m_Bottom: 42
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 0
+    m_FontSize: 10
     m_FontStyle: 1
     m_Alignment: 1
     m_WordWrap: 1
@@ -212,4 +212,6 @@ MonoBehaviour:
     m_StretchHeight: 0
   textures:
   - name: NodePort
-    texture: {fileID: 2800000, guid: d883927d99af39843aa8b16ac9b0acc6, type: 3}
+    texture: {fileID: 2800000, guid: 29ce5d205ae857346a94a93381e5451c, type: 3}
+  - name: EventPort
+    texture: {fileID: 2800000, guid: 141a5e18c47dc27418d695f0ad495fcc, type: 3}

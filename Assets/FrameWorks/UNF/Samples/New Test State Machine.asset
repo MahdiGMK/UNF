@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db0cae6dc4f2c8499d46c9ddc2f74f6, type: 3}
+  m_Name: New Test State Machine
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 114195697140633484}
+  - {fileID: 114184602307460902}
+  - {fileID: 114944916903364994}
+  - {fileID: 114562562024112028}
+  connections:
+  - outputNode: {fileID: 114195697140633484}
+    outputFieldName: output
+    inputNode: {fileID: 114184602307460902}
+    inputFieldName: Input
+  cameraPosition: {x: -695.29175, y: 9.202148}
+  ZoomAmm: 0.8
+  currentState: {fileID: 0}
+--- !u!114 &114184602307460902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59f6fcab5bae1141af090e8c065f5e7, type: 3}
+  m_Name: New DisplayNode
+  m_EditorClassIdentifier: 
+  Name: New DisplayNode
+  position: {x: 857.79175, y: 150.79785}
+  ports:
+  - fieldName: Input
+    parentNode: {fileID: 114184602307460902}
+    IOType: 0
+    connectMethod: 0
+    showBackValueMethod: 2
+    drawingPos: 0
+    connections:
+    - outputNode: {fileID: 114195697140633484}
+      outputFieldName: output
+      inputNode: {fileID: 114184602307460902}
+      inputFieldName: Input
+  fields:
+  - Input
+  graph: {fileID: 11400000}
+  Input: 
+--- !u!114 &114195697140633484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df93f7211d51fbf45928532b06ea4568, type: 3}
+  m_Name: New FloatNode
+  m_EditorClassIdentifier: 
+  Name: New FloatNode
+  position: {x: 362.79175, y: 77.04785}
+  ports:
+  - fieldName: output
+    parentNode: {fileID: 114195697140633484}
+    IOType: 1
+    connectMethod: 1
+    showBackValueMethod: 0
+    drawingPos: 1
+    connections:
+    - outputNode: {fileID: 114195697140633484}
+      outputFieldName: output
+      inputNode: {fileID: 114184602307460902}
+      inputFieldName: Input
+  fields:
+  - value
+  - output
+  graph: {fileID: 11400000}
+  value: -6.96
+  output: 0
+--- !u!114 &114562562024112028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0fb08d9836a62e4398ebf9c330aeb7a, type: 3}
+  m_Name: New TestStateNode
+  m_EditorClassIdentifier: 
+  Name: New TestStateNode
+  position: {x: 793.41675, y: -13.577148}
+  ports:
+  - fieldName: StartEvent
+    parentNode: {fileID: 114562562024112028}
+    IOType: 0
+    connectMethod: 1
+    showBackValueMethod: 2
+    drawingPos: 0
+    connections: []
+  - fieldName: EndEvent
+    parentNode: {fileID: 114562562024112028}
+    IOType: 1
+    connectMethod: 0
+    showBackValueMethod: 2
+    drawingPos: 1
+    connections: []
+  fields:
+  - StartEvent
+  - EndEvent
+  graph: {fileID: 11400000}
+--- !u!114 &114944916903364994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0fb08d9836a62e4398ebf9c330aeb7a, type: 3}
+  m_Name: New TestStateNode
+  m_EditorClassIdentifier: 
+  Name: New TestStateNode
+  position: {x: 417.16675, y: -76.07715}
+  ports:
+  - fieldName: StartEvent
+    parentNode: {fileID: 114944916903364994}
+    IOType: 0
+    connectMethod: 1
+    showBackValueMethod: 2
+    drawingPos: 0
+    connections: []
+  - fieldName: EndEvent
+    parentNode: {fileID: 114944916903364994}
+    IOType: 1
+    connectMethod: 0
+    showBackValueMethod: 2
+    drawingPos: 1
+    connections: []
+  fields:
+  - StartEvent
+  - EndEvent
+  graph: {fileID: 11400000}

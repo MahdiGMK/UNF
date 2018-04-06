@@ -8,7 +8,7 @@ public class Connection{
     public Node outputNode;
     public string outputFieldName;
 
-    public object MovedData
+    public virtual object MovedData
     {
         get
         {

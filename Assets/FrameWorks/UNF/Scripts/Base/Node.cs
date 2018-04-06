@@ -42,23 +42,33 @@ public abstract class Node : ScriptableObject
             OutputAttribute[] oa = (OutputAttribute[])(field.GetCustomAttributes(typeof(OutputAttribute), false));
             if (ia.Length > 0)
             {
-                if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, pa[0].connectionMethod, pa[0].showBackingValueMethod));
+                if (field.FieldType == typeof(StateEvent))
+                    ports.Add(new StateEvent(field.Name, i, field.FieldType, this, NodePort.portType.Input, 0, 0));
                 else
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, NodePort.connectionMethod.Single,NodePort.showBackingValueMethod.Unconnected));
+                {
+                    if (pa.Length > 0)
+                        ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, pa[0].connectionMethod, pa[0].showBackingValueMethod));
+                    else
+                        ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Input, NodePort.connectionMethod.Single, NodePort.showBackingValueMethod.Unconnected));
+                }
             }
             else if (oa.Length > 0)
             {
-                if (pa.Length > 0)
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, pa[0].connectionMethod,pa[0].showBackingValueMethod));
+                if (field.FieldType == typeof(StateEvent))
+                    ports.Add(new StateEvent(field.Name, i, field.FieldType, this, NodePort.portType.Output, 0, 0));
                 else
-                    ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple,NodePort.showBackingValueMethod.Unconnected));
+                {
+                    if (pa.Length > 0)
+                        ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, pa[0].connectionMethod, pa[0].showBackingValueMethod));
+                    else
+                        ports.Add(new NodePort(field.Name, i, field.FieldType, this, NodePort.portType.Output, NodePort.connectionMethod.Multiple, NodePort.showBackingValueMethod.Unconnected));
+                }
             }
         }
     }
     public void ClearConnections()
     {
-        for (int i = 0;i < graph.connections.Count;i++)
+        for (int i = 0; i < graph.connections.Count; i++)
         {
             var connection = graph.connections[i];
             if (connection.inputNode == this || connection.outputNode == this)
@@ -104,6 +114,10 @@ public class NodeAttribute : Attribute
 {
     public readonly Type nodeType;
     public readonly string creatingPath;
+    /// <summary>
+    /// UsingId is used for spcial graph datas with special nodes
+    /// </summary>
+    public string UsingID = "";
     public NodeAttribute(Type nodeType, string creatingPath)
     {
         this.nodeType = nodeType;

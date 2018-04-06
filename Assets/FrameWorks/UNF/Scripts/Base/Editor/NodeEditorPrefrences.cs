@@ -9,7 +9,7 @@ public static class NodeEditorPreferences
     [Serializable]
     public class Setting : ISerializationCallbackReceiver
     {
-        [SerializeField] public Color nodeSelectionColor = new Color(1, 0.7f, 0);
+        [SerializeField] public Color nodeSelectionColor = new Color(1, 0.4f, 0);
 
         [SerializeField] public Color backgroundColor = new Color(0.3f, 0.3f, 0.3f);
         //Grid
@@ -49,7 +49,6 @@ public static class NodeEditorPreferences
             {
                 typeColorsData += allPairs[i].Key + ":" + ColorUtility.ToHtmlStringRGB(allPairs[i].Value) + (i < allPairs.Count - 1 ? "," : "");
             }
-            Debug.Log(typeColorsData);
         }
     }
     static bool prefsLoaded;

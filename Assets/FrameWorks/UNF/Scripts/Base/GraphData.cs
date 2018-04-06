@@ -6,16 +6,24 @@ using UnityEngine;
 public abstract class GraphData : ScriptableObject
 {
     public List<Node> nodes = new List<Node>();
+    //[SerializeField, HideInInspector]
     public List<Connection> connections = new List<Connection>();
 #if UNITY_EDITOR
     public Vector2 cameraPosition;
     public float ZoomAmm = 1;
     [NonSerialized, HideInInspector]
     public List<Node> selectedNodes = new List<Node>();
-    [NonSerialized,HideInInspector]
+    [NonSerialized, HideInInspector]
     public NodePort selectedNodePort;
 #endif
-    public void Init()
+    public static GraphData CopyGraphData(GraphData target)
+    {
+        GraphData res = (GraphData)CreateInstance(target.GetType());
+        res.nodes = target.nodes;
+        res.connections = target.connections;
+        return res;
+    }
+    public virtual void Init()
     {
         if (connections == null)
             connections = new List<Connection>();
@@ -66,7 +74,7 @@ public abstract class GraphData : ScriptableObject
     public void TryCreateConnection(NodePort input, NodePort output)
     {
         //input.Type == output.Type
-        bool connectCondition = input.parentNode != output.parentNode && connections.Find(obj => { return obj.inputNode == input.parentNode && obj.inputFieldName == input.fieldName && obj.outputNode == output.parentNode && obj.outputFieldName == output.fieldName; }) == null;
+        bool connectCondition = input.parentNode != output.parentNode && connections.Find(obj => { return obj.inputNode == input.parentNode && obj.inputFieldName == input.fieldName && obj.outputNode == output.parentNode && obj.outputFieldName == output.fieldName; }) == null && ((input is StateEvent && output is StateEvent) || !(input is StateEvent) && !(output is StateEvent));
         if (connectCondition)
         {
             if (input.connectMethod == NodePort.connectionMethod.Single && input.connections.Count > 0)
@@ -82,4 +90,12 @@ public abstract class GraphData : ScriptableObject
         connections.Remove(connection);
         Init();
     }
+}
+public class GraphDataAttribute : Attribute
+{
+    /// <summary>
+    /// UsingId is used for spcial graph datas with special nodes
+    /// </summary>
+    public string UsingID = "";
+
 }

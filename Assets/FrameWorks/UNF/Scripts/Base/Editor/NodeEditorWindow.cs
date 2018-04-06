@@ -12,7 +12,8 @@ public class NodeEditorWindow : EditorWindow
         if (data != null && data.nodes != null)
             foreach (var node in data.nodes)
             {
-                node.Init();
+                if (node != null)
+                    node.Init();
             }
     }
     public static NodeEditorWindow GetWindow(GraphData data)
@@ -29,8 +30,8 @@ public class NodeEditorWindow : EditorWindow
         {
             NodeEditorGUIUtility.DrawGraphData(data);
             NodeEditorHandles.HandleGraphData(data);
-            if (mouseOverWindow)
-                Repaint();
+
+            Repaint();
         }
     }
 }

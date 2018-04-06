@@ -31,25 +31,12 @@ public static class NodeEditorHandles
 
     public static void HandleGraphData(GraphData data)
     {
-        if (Event.current.control && Event.current.shift)
-        {
-            UnityEngine.Object script = null;
-            if (Event.current.keyCode == KeyCode.H)
-            {
-                script = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/FrameWorks/UNF/Scripts/Editor/NodeEditorHandles.cs");
-                AssetDatabase.OpenAsset(script);
-            }
-            if (Event.current.keyCode == KeyCode.G)
-            {
-                script = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/FrameWorks/UNF/Scripts/Editor/NodeEditorGUIUtility.cs");
-                AssetDatabase.OpenAsset(script);
-            }
-        }
         DoMouseHandles(data);
     }
-    public static Rect mouseDragRect = new Rect(-1, -1, 0, 0);
-    static Vector2 mouseDragRectStartPoint = new Vector2(-1, -1);
-    public static GenericMenu rightClickMenu;
+    public static bool hasMouseDragRect = false;
+    public static Rect mouseDragRect = new Rect();
+    static Vector2 mouseDragRectStartPoint = new Vector2();
+    static GenericMenu rightClickMenu;
 
     public static NodePort hoveredNodePort;
     public static void DoMouseHandles(GraphData data)
@@ -61,10 +48,11 @@ public static class NodeEditorHandles
 
         if (data.selectedNodePort != null && data.selectedNodePort.parentNode == null)
             data.selectedNodePort = null;
+        Vector2 LastMousePos = Vector2.zero;
+        LastMousePos = Event.current.mousePosition;
         switch (Event.current.type)
         {
             case EventType.MouseDown:
-                Vector2 LastMousePos = Event.current.mousePosition;
                 switch (Event.current.button)
                 {
                     //L
@@ -108,7 +96,8 @@ public static class NodeEditorHandles
                             {
                                 data.selectedNodes.Clear();
                             }
-                            mouseDragRect = new Rect(Event.current.mousePosition, Vector2.zero);
+                            hasMouseDragRect = true;
+                            mouseDragRect = new Rect();
                             mouseDragRectStartPoint = Event.current.mousePosition;
                         }
                         #endregion
@@ -173,59 +162,7 @@ public static class NodeEditorHandles
                                 data.DestroyConnection(hoveredNodePort.connections[0]);
                         }
                         #endregion
-                        rightClickMenu = new GenericMenu();
-                        if (hoveredNode == null)
-                        {
-                            List<NodeAttribute> nodeAttributes = new List<NodeAttribute>();
-                            Type[] nodeTypes = typeof(Node).Assembly.GetTypes();
-                            foreach (var nodeType in nodeTypes)
-                            {
-                                var attributes = (NodeAttribute[])nodeType.GetCustomAttributes(typeof(NodeAttribute), false);
-                                if (attributes.Length > 0)
-                                    nodeAttributes.Add(attributes[0]);
-                            }
-                            foreach (var nodeAttribute in nodeAttributes)
-                            {
-                                rightClickMenu.AddItem(new GUIContent(nodeAttribute.creatingPath), false, () =>
-                                {
-                                    data.CreateNode(nodeAttribute.nodeType, (-data.cameraPosition + LastMousePos / data.ZoomAmm) - Screen.safeArea.size / 2 / data.ZoomAmm);
-
-                                });
-                            }
-                        }
-                        else
-                        {
-                            rightClickMenu.AddItem(new GUIContent("Remove"), false, () =>
-                            {
-                                foreach (var node in data.selectedNodes)
-                                {
-                                    data.DestroyNode(node);
-                                }
-                            });
-                            rightClickMenu.AddItem(new GUIContent("Copy"), false, () =>
-                            {
-                                foreach (var node in data.selectedNodes)
-                                {
-                                    data.CopyNode(node, node.position + new Vector2(50, 25));
-                                }
-                            });
-
-                            rightClickMenu.AddItem(new GUIContent("Reset"), false, () =>
-                            {
-                                foreach (var node in data.selectedNodes)
-                                {
-                                    data.ResetNode(node);
-                                }
-                            });
-                        }
-                        rightClickMenu.AddSeparator("");
-                        rightClickMenu.AddItem(new GUIContent("Prefrences"), false, () =>
-                        {
-                        });
-
-                        //Drop Down
-                        if (hoveredNodePort == null)
-                            rightClickMenu.ShowAsContext();
+                        DropRightClickMenu(data, hoveredNode, LastMousePos);
                         break;
                 }
                 if (data.selectedNodes.Count > 0)
@@ -238,7 +175,7 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-                        if (mouseDragRect.position.x >= 0)
+                        if (hasMouseDragRect)
                         {
                             Vector2 mp = Event.current.mousePosition;
                             if (mp.x > mouseDragRectStartPoint.x)
@@ -262,13 +199,24 @@ public static class NodeEditorHandles
                                 mouseDragRect.yMin = mp.y;
                             }
                         }
-                        if (data.selectedNodes.Count > 0 && data.selectedNodePort == null && hoveredNode != null && data.selectedNodes.Contains(hoveredNode) && mouseDragRect.position.x < 0)
+                        if (data.selectedNodes.Count > 0 && data.selectedNodePort == null && hoveredNode != null && data.selectedNodes.Contains(hoveredNode) && !hasMouseDragRect)
                         {
                             foreach (var node in data.selectedNodes)
                             {
                                 node.position += Event.current.delta / data.ZoomAmm;
                             }
                         }
+
+                        if (LastMousePos.x < 50)
+                            HandleCameraPan(data, Vector2.right * Mathf.Clamp(50 - LastMousePos.x, 0, 50) / 5);
+                        if (LastMousePos.y < 50)
+                            HandleCameraPan(data, Vector2.up * Mathf.Clamp(50 - LastMousePos.y, 0, 50) / 5);
+
+                        if (LastMousePos.x > Screen.width - 50)
+                            HandleCameraPan(data, Vector2.left * Mathf.Clamp(LastMousePos.x - Screen.width + 50, 0, 50) / 5);
+                        if (LastMousePos.y > Screen.height - 50 - 24)
+                            HandleCameraPan(data, Vector2.down * Mathf.Clamp(LastMousePos.y - Screen.height + 50 + 24, 0, 50) / 5);
+
                         break;
                     //M
                     case 2:
@@ -284,7 +232,7 @@ public static class NodeEditorHandles
                 {
                     //L
                     case 0:
-                        if (!Event.current.shift && !Event.current.control && mouseDragRect.x >= 0)
+                        if (!Event.current.shift && !Event.current.control && hasMouseDragRect)
                         {
                             data.selectedNodes.Clear();
                         }
@@ -303,8 +251,9 @@ public static class NodeEditorHandles
                                 }
                             }
                         }
-                        mouseDragRect = new Rect(-1, -1, 0, 0);
-
+                        mouseDragRect = new Rect(0, 0, 0, 0);
+                        hasMouseDragRect = false;
+                        mouseDragRectStartPoint = Vector2.zero;
                         #region ConnectionCreation
                         if (data.selectedNodePort != null && hoveredNodePort != null)
                             if (hoveredNodePort != data.selectedNodePort)
@@ -332,16 +281,91 @@ public static class NodeEditorHandles
         }
         if (data.selectedNodePort != null)
         {
-            Color splineColor = Color.black;
-            if (data.selectedNodePort.Type != null)
+            Color splineColor = Color.white;
+            if (data.selectedNodePort.Type != null && !(data.selectedNodePort is StateEvent))
                 splineColor = NodeEditorGUIUtility.NodePortColor(data.selectedNodePort);
-            NodeEditorGUIUtility.DrawSpline(NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, Event.current.mousePosition, splineColor, 7.5f * data.ZoomAmm);
+            if (data.selectedNodePort.IOType == NodePort.portType.Output)
+                NodeEditorGUIUtility.DrawSpline(NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, Event.current.mousePosition, splineColor, 7.5f * data.ZoomAmm);
+            else
+                NodeEditorGUIUtility.DrawSpline(Event.current.mousePosition, NodeEditorGUIUtility.GetNodePortRect(data.selectedNodePort).center, splineColor, 7.5f * data.ZoomAmm);
         }
     }
+
+    private static void DropRightClickMenu(GraphData data, Node hoveredNode, Vector2 LastMousePos)
+    {
+        rightClickMenu = new GenericMenu();
+        if (hoveredNode == null)
+        {
+            List<NodeAttribute> nodeAttributes = new List<NodeAttribute>();
+            Type[] nodeTypes = typeof(Node).Assembly.GetTypes();
+            GraphDataAttribute graphAttribute = null;
+            {
+                var assembly = data.GetType();
+                GraphDataAttribute[] GDA = (GraphDataAttribute[])assembly.GetCustomAttributes(typeof(GraphDataAttribute), false);
+                if (GDA.Length > 0)
+                    graphAttribute = GDA[0];
+            }
+            foreach (var nodeType in nodeTypes)
+            {
+                var attributes = (NodeAttribute[])nodeType.GetCustomAttributes(typeof(NodeAttribute), false);
+                string TargetUsingID = "";
+                if (graphAttribute != null)
+                    TargetUsingID = graphAttribute.UsingID;
+                if (attributes.Length > 0 && (attributes[0].UsingID == "" || TargetUsingID == "" || TargetUsingID == attributes[0].UsingID))
+                    nodeAttributes.Add(attributes[0]);
+            }
+            foreach (var nodeAttribute in nodeAttributes)
+            {
+                rightClickMenu.AddItem(new GUIContent(nodeAttribute.creatingPath), false, () =>
+                {
+                    data.CreateNode(nodeAttribute.nodeType, (-data.cameraPosition + LastMousePos / data.ZoomAmm) - Screen.safeArea.size / 2 / data.ZoomAmm);
+
+                });
+            }
+        }
+        else
+        {
+            rightClickMenu.AddItem(new GUIContent("Remove"), false, () =>
+            {
+                foreach (var node in data.selectedNodes)
+                {
+                    data.DestroyNode(node);
+                }
+            });
+            rightClickMenu.AddItem(new GUIContent("Copy"), false, () =>
+            {
+                foreach (var node in data.selectedNodes)
+                {
+                    data.CopyNode(node, node.position + new Vector2(50, 25));
+                }
+            });
+
+            rightClickMenu.AddItem(new GUIContent("Reset"), false, () =>
+            {
+                foreach (var node in data.selectedNodes)
+                {
+                    data.ResetNode(node);
+                }
+            });
+        }
+
+        rightClickMenu.AddSeparator("");
+
+        rightClickMenu.AddItem(new GUIContent("Prefrences"), false, () =>
+        {
+        });
+
+        //Drop Down
+        if (hoveredNodePort == null)
+            rightClickMenu.ShowAsContext();
+    }
+
     public static void HandleCameraPan(GraphData data, Vector2 delta)
     {
         //Pan
         data.cameraPosition += delta / data.ZoomAmm;
+        if (hasMouseDragRect)
+            mouseDragRectStartPoint += delta / data.ZoomAmm;
     }
     public static void HandleCameraZoomToCenter(GraphData data, float delta, float sensitivity)
     {
@@ -359,7 +383,7 @@ public static class NodeEditorHandles
         if (data.ZoomAmm != prevZA)
         {
             Vector2 pointFC = point - new Vector2(Screen.width, Screen.height - 24) / 2;
-            data.cameraPosition = Vector2.Lerp(data.cameraPosition, df > 0 ? data.cameraPosition - pointFC : data.cameraPosition + pointFC, Mathf.Abs(df));
+            HandleCameraPan(data, data.cameraPosition - Vector2.Lerp(data.cameraPosition, df > 0 ? data.cameraPosition - pointFC : data.cameraPosition + pointFC, Mathf.Abs(df)));
         }
     }
 
